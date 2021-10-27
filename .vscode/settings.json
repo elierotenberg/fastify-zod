@@ -1,0 +1,48 @@
+{
+    "editor.fontLigatures": true,
+    "editor.suggestSelection": "recentlyUsed",
+    "editor.tabSize": 2,
+    "emmet.showAbbreviationSuggestions": false,
+    "emmet.showExpandedAbbreviation": "never",
+    "emmet.excludeLanguages": [
+      "typescript",
+      "javascript",
+    ],
+    "eslint.packageManager": "npm",
+    "eslint.workingDirectories": [{ "mode": "auto" }],
+    "eslint.lintTask.enable": true,
+    "files.autoSave": "off",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[javascript]": {
+      "editor.formatOnSave": false
+    },
+    "[javascriptreact]": {
+      "editor.formatOnSave": false
+    },
+    "[typescript]": {
+      "editor.formatOnSave": false
+    },
+    "[typescriptreact]": {
+      "editor.formatOnSave": false
+    },
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.paths": true,
+    "yaml.format.enable": true,
+    "yaml.validate": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.suggest.showSnippets": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.snippetSuggestions": "none",
+    "editor.formatOnSave": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.referencesCodeLens.enabled": true,
+    "javascript.referencesCodeLens.showOnAllFunctions": true,
+    "typescript.implementationsCodeLens.enabled": true,
+    "typescript.referencesCodeLens.showOnAllFunctions": true,
+    "typescript.referencesCodeLens.enabled": true,
+    "references.preferredLocation": "view",
+    "editor.gotoLocation.multipleTypeDefinitions": "goto"
+  }
+  

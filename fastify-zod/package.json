@@ -1,0 +1,60 @@
+{
+  "name": "fastify-zod",
+  "version": "0.0.1",
+  "description": "Zod integration with Fastify",
+  "main": "build/index.js",
+  "scripts": {
+    "check:types": "tsc -p . --noEmit",
+    "check:lint": "eslint src",
+    "check": "npm run check:types && npm run check:lint",
+    "clean": "rm -rf build",
+    "build:types": "tsc -p . --emitDeclarationOnly",
+    "build:babel": "babel src --out-dir build --extensions '.ts' --source-maps",
+    "build": "npm run clean && npm run build:types && npm run build:babel",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elierotenberg/fastify-zod.git"
+  },
+  "keywords": [
+    "zod",
+    "fastify",
+    "openapi"
+  ],
+  "author": "Elie Rotenberg <elie@rotenberg.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elierotenberg/fastify-zod/issues"
+  },
+  "homepage": "https://github.com/elierotenberg/fastify-zod#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/http-errors": "^1.8.1",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.6",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "eslint": "^8.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "fastify": "^3.22.1",
+    "fastify-swagger": "^4.12.6",
+    "http-errors": "^1.8.0",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.4",
+    "zod": "^3.11.6",
+    "zod-to-json-schema": "^3.11.0"
+  },
+  "peerDependencies": {
+    "fastify": "^3.22.1",
+    "fastify-swagger": "^4.12.6",
+    "zod": "^3.11.6",
+    "zod-to-json-schema": "^3.11.0"
+  }
+}

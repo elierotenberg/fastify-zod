@@ -1,0 +1,15 @@
+{
+  "name": "fastify-zod-example-openapi-client",
+  "version": "0.0.0",
+  "description": "OpenAPI client for fastify-zod-example-openapi-client",
+  "author": "OpenAPI-Generator",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^3.6"
+  }
+}
