@@ -20,7 +20,7 @@ export const buildJsonSchema = <$id extends string>(
   $id: $id,
 ): JsonSchema<$id> => ({
   $id,
-  ...zodToJsonSchema(ZodSchema),
+  ...zodToJsonSchema(ZodSchema, { target: "openApi3" }),
 });
 
 export const buildJsonSchemas = <$id extends string>(
