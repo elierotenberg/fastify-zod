@@ -6,6 +6,12 @@ export type JsonSchema<$id extends string> = {
   $id: $id;
 };
 
+type Target = `openApi3` | `jsonSchema7`;
+
+export type Options = {
+  readonly target?: Target;
+};
+
 export type JsonSchemas<$id extends string> = {
   schemas: JsonSchema<$id>[];
   $ref: <$$id extends $id>(
@@ -18,17 +24,19 @@ export type JsonSchemas<$id extends string> = {
 export const buildJsonSchema = <$id extends string>(
   ZodSchema: z.ZodType<unknown>,
   $id: $id,
+  { target = `jsonSchema7` }: Options = {},
 ): JsonSchema<$id> => ({
   $id,
-  ...zodToJsonSchema(ZodSchema, { target: "openApi3" }),
+  ...zodToJsonSchema(ZodSchema, { target }),
 });
 
 export const buildJsonSchemas = <$id extends string>(
   zodSchemas: Record<$id, z.ZodType<unknown>>,
+  { target = `jsonSchema7` }: Options = {},
 ): JsonSchemas<$id> => ({
   schemas: Object.entries(zodSchemas).reduce<JsonSchemas<$id>[`schemas`]>(
     (schemas, [$id, ZodSchema]) => [
-      buildJsonSchema(ZodSchema as z.ZodType<unknown>, $id as $id),
+      buildJsonSchema(ZodSchema as z.ZodType<unknown>, $id as $id, { target }),
       ...schemas,
     ],
     [],
