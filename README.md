@@ -138,3 +138,83 @@ And generate the corresponding client:
 ```
 $ openapi-generator-cli generate
 ```
+
+## Options
+
+### buildJsonSchema options object
+
+#### **target**?: _jsonSchema7_ (default) or _openApi3_
+
+Generates either `jsonSchema7` or `openApi3` schema. See [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema#options-object).
+
+### buildJsonSchemas options object
+
+#### **target**?: _jsonSchema7_ (default) or _openApi3_
+
+Generates either `jsonSchema7` or `openApi3` schema. See [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema#options-object).
+
+#### mergeRefs?: boolean
+
+Recursively merge structurally-equivalent schemas as `$ref`s.
+
+This is especially useful for enums, as equivalent enums will typically be generated as different `enum`s by downstream generators, and therefore will be treated as inequal by TypeScript.
+
+For example:
+
+```ts
+enum FooFizzEnum {
+  Foo = `Bar`,
+  Fizz = `Buzz`,
+}
+
+const FooFizz = z.nativeEnum(FooFizzEnum);
+
+const FooFizzItem = z.object({
+  value: FooFizz,
+});
+```
+
+Without `mergeRefs`, this yields:
+
+```ts
+equals(buildJsonSchemas({ FooFizz, FooFizzItem }).schemas, [
+  {
+    $id: `FooFizzItem`,
+    $schema: `http://json-schema.org/draft-07/schema#`,
+    type: `object`,
+    properties: { value: { type: `string`, enum: [`Bar`, `Buzz`] } },
+    required: [`value`],
+    additionalProperties: false,
+  },
+  {
+    $id: `FooFizz`,
+    $schema: `http://json-schema.org/draft-07/schema#`,
+    type: `string`,
+    enum: [`Bar`, `Buzz`],
+  },
+]);
+```
+
+With `mergeRefs`, this yield:
+
+```ts
+equals(
+  buildJsonSchemas({ FooFizz, FooFizzItem }, { mergeRefs: true }).schemas,
+  [
+    {
+      $id: `FooFizzItem`,
+      $schema: `http://json-schema.org/draft-07/schema#`,
+      type: `object`,
+      properties: { value: { $ref: `FooFizz#` } },
+      required: [`value`],
+      additionalProperties: false,
+    },
+    {
+      $id: `FooFizz`,
+      $schema: `http://json-schema.org/draft-07/schema#`,
+      type: `string`,
+      enum: [`Bar`, `Buzz`],
+    },
+  ]
+);
+```

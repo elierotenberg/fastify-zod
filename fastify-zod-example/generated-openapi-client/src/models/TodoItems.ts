@@ -13,12 +13,19 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    TodoItem,
+    TodoItemFromJSON,
+    TodoItemFromJSONTyped,
+    TodoItemToJSON,
+} from './';
+
 /**
  * 
  * @export
  * @interface TodoItems
  */
-export interface TodoItems extends Array<object> {
+export interface TodoItems extends Array<TodoItem> {
 }
 
 export function TodoItemsFromJSON(json: any): TodoItems {

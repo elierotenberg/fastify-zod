@@ -1,10 +1,10 @@
-import { Options } from "..";
+import { BuildJsonSchemaOptions } from "..";
 
 type Helpers = {
   $schema: Record<string, unknown>;
   constOrEnum: (value: unknown) => Record<string, unknown>;
   stringEnum: (values: unknown[]) => Record<string, unknown>;
-  options: Options;
+  options: BuildJsonSchemaOptions;
 };
 
 export const helpers = (

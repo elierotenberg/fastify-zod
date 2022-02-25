@@ -5,12 +5,12 @@ import { BadRequest, NotFound } from "http-errors";
 
 import { buildJsonSchemas, withRefResolver } from "..";
 
-const TodoItemId = z.object({
+export const TodoItemId = z.object({
   id: z.string().uuid(),
 });
-type TodoItemId = z.infer<typeof TodoItemId>;
+export type TodoItemId = z.infer<typeof TodoItemId>;
 
-const TodoItem = TodoItemId.extend({
+export const TodoItem = TodoItemId.extend({
   label: z.string(),
   dueDate: z.date().optional(),
   state: z.union([
@@ -20,10 +20,10 @@ const TodoItem = TodoItemId.extend({
   ]),
 });
 
-type TodoItem = z.infer<typeof TodoItem>;
+export type TodoItem = z.infer<typeof TodoItem>;
 
-const TodoItems = z.array(TodoItem);
-type TodoItems = z.infer<typeof TodoItems>;
+export const TodoItems = z.array(TodoItem);
+export type TodoItems = z.infer<typeof TodoItems>;
 
 const { schemas, $ref } = buildJsonSchemas({
   TodoItemId,

@@ -1,6 +1,6 @@
 {
   "name": "fastify-zod-example",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Example integration of fastify-zod",
   "main": "build/main.js",
   "scripts": {
@@ -22,25 +22,25 @@
   },
   "homepage": "https://github.com/elierotenberg/fastify-zod#readme",
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.4.23",
-    "@types/http-errors": "^1.8.1",
-    "fastify": "^3.25.3",
-    "fastify-swagger": "^4.13.0",
+    "@openapitools/openapi-generator-cli": "^2.4.26",
+    "@types/http-errors": "^1.8.2",
+    "fastify": "^3.27.2",
+    "fastify-swagger": "^4.15.0",
     "fastify-zod": "file:../fastify-zod",
     "http-errors": "^1.7.3",
-    "zod": "^3.11.6",
+    "zod": "^3.12.0",
     "zod-to-json-schema": "^3.11.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.16.7",
-    "@babel/core": "^7.16.7",
-    "@babel/preset-env": "^7.16.7",
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
-    "@types/node": "^17.0.8",
-    "@typescript-eslint/eslint-plugin": "^5.9.0",
-    "@typescript-eslint/parser": "^5.9.0",
-    "eslint": "^8.6.0",
-    "eslint-config-prettier": "^8.3.0",
+    "@types/node": "^17.0.21",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0"
   }

@@ -24,11 +24,14 @@ type TodoItem = z.infer<typeof TodoItem>;
 const TodoItems = z.array(TodoItem);
 type TodoItems = z.infer<typeof TodoItems>;
 
-const { schemas, $ref } = buildJsonSchemas({
-  TodoItemId,
-  TodoItem,
-  TodoItems,
-});
+const { schemas, $ref } = buildJsonSchemas(
+  {
+    TodoItemId,
+    TodoItem,
+    TodoItems,
+  },
+  { mergeRefs: true },
+);
 
 export const createServer = (): FastifyInstance => {
   let state: TodoItem[] = [];

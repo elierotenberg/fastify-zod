@@ -8,27 +8,7 @@ components:
     TodoItems:
       type: array
       items:
-        type: object
-        properties:
-          id:
-            type: string
-            format: uuid
-          label:
-            type: string
-          dueDate:
-            type: string
-            format: date-time
-          state:
-            type: string
-            enum:
-              - todo
-              - in progress
-              - done
-        required:
-          - id
-          - label
-          - state
-        additionalProperties: false
+        $ref: '#/components/schemas/TodoItem'
     TodoItem:
       type: object
       properties:
