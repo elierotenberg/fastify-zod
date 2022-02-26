@@ -1,4 +1,4 @@
-import { BuildJsonSchemaOptions } from "..";
+import { BuildJsonSchemaOptions } from "../buildJsonSchema";
 
 type Helpers = {
   $schema: Record<string, unknown>;

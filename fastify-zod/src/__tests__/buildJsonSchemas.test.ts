@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { buildJsonSchemas } from "..";
+import { buildJsonSchemas } from "../buildJsonSchema";
 
 import { helpers } from "./utils";
 
@@ -66,61 +66,5 @@ describe(`buildJsonSchemas`, () => {
         expect(jsonSchemas.$ref(`Person`)).toEqual({ $ref: `Person#` });
       });
     });
-
-    test(`mergeRefs:`, () => {
-      enum FooFizzEnum {
-        Foo = `Bar`,
-        Fizz = `Buzz`,
-      }
-
-      const FooFizz = z.nativeEnum(FooFizzEnum);
-
-      const FooFizzItem = z.object({
-        value: FooFizz,
-      });
-
-      const unmerged = buildJsonSchemas({ FooFizz, FooFizzItem });
-
-      expect(unmerged.schemas).toEqual([
-        {
-          $id: `FooFizzItem`,
-          $schema: `http://json-schema.org/draft-07/schema#`,
-          type: `object`,
-          properties: { value: { type: `string`, enum: [`Bar`, `Buzz`] } },
-          required: [`value`],
-          additionalProperties: false,
-        },
-        {
-          $id: `FooFizz`,
-          $schema: `http://json-schema.org/draft-07/schema#`,
-          type: `string`,
-          enum: [`Bar`, `Buzz`],
-        },
-      ]);
-
-      const merged = buildJsonSchemas(
-        { FooFizz, FooFizzItem },
-        { mergeRefs: true },
-      );
-
-      expect(merged.schemas).toEqual([
-        {
-          $id: `FooFizzItem`,
-          $schema: `http://json-schema.org/draft-07/schema#`,
-          type: `object`,
-          properties: { value: { $ref: `FooFizz#` } },
-          required: [`value`],
-          additionalProperties: false,
-        },
-        {
-          $id: `FooFizz`,
-          $schema: `http://json-schema.org/draft-07/schema#`,
-          type: `string`,
-          enum: [`Bar`, `Buzz`],
-        },
-      ]);
-    });
   }
 });
-
-export {};

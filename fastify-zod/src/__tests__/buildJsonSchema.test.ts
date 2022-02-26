@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { buildJsonSchema } from "..";
+import { buildJsonSchema } from "../buildJsonSchema";
 
 import { helpers } from "./utils";
 

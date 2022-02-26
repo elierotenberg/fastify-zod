@@ -1,23 +1,27 @@
 import fastify, { FastifyInstance } from "fastify";
+import fastifySwagger from "fastify-swagger";
 import { z } from "zod";
-import swagger from "fastify-swagger";
 import { BadRequest, NotFound } from "http-errors";
 
-import { buildJsonSchemas, withRefResolver } from "..";
+import { withFastifySwaggerRefResolver } from "../fastify-zod";
 
 export const TodoItemId = z.object({
   id: z.string().uuid(),
 });
 export type TodoItemId = z.infer<typeof TodoItemId>;
 
+enum TodoStateEnum {
+  Todo = `todo`,
+  InProgress = `in progress`,
+  Done = `done`,
+}
+
+export const TodoState = z.nativeEnum(TodoStateEnum);
+
 export const TodoItem = TodoItemId.extend({
   label: z.string(),
   dueDate: z.date().optional(),
-  state: z.union([
-    z.literal(`todo`),
-    z.literal(`in progress`),
-    z.literal(`done`),
-  ]),
+  state: TodoState,
 });
 
 export type TodoItem = z.infer<typeof TodoItem>;
@@ -25,23 +29,34 @@ export type TodoItem = z.infer<typeof TodoItem>;
 export const TodoItems = z.array(TodoItem);
 export type TodoItems = z.infer<typeof TodoItems>;
 
-const { schemas, $ref } = buildJsonSchemas({
-  TodoItemId,
-  TodoItem,
-  TodoItems,
+export const TodoItemsGroupedByStatus = z.object({
+  todo: z.array(TodoItem),
+  inProgress: z.array(TodoItem),
+  done: z.array(TodoItem),
 });
 
-export const createTestServer = (): FastifyInstance => {
+export type TodoItemsGroupedByStatus = z.infer<typeof TodoItemsGroupedByStatus>;
+
+export const models = {
+  TodoState,
+  TodoItem,
+  TodoItems,
+  TodoItemId,
+  TodoItemsGroupedByStatus,
+} as const;
+
+export const createTestServer = (
+  addSchemas: (app: FastifyInstance) => void,
+  $ref: (ref: keyof typeof models) => unknown,
+): FastifyInstance => {
   let state: TodoItem[] = [];
   const app: FastifyInstance = fastify();
 
-  for (const schema of schemas) {
-    app.addSchema(schema);
-  }
+  addSchemas(app);
 
   app.register(
-    swagger,
-    withRefResolver({
+    fastifySwagger,
+    withFastifySwaggerRefResolver({
       routePrefix: `/openapi`,
       exposeRoute: true,
       staticCSP: true,
@@ -68,6 +83,25 @@ export const createTestServer = (): FastifyInstance => {
       },
     },
     async () => state,
+  );
+
+  app.get<{
+    Reply: TodoItemsGroupedByStatus;
+  }>(
+    `/item/grouped-by-status`,
+    {
+      schema: {
+        operationId: `getTodoItemsGroupedByStatus`,
+        response: {
+          200: $ref(`TodoItemsGroupedByStatus`),
+        },
+      },
+    },
+    async () => ({
+      done: state.filter((item) => item.state === `done`),
+      inProgress: state.filter((item) => item.state === `in progress`),
+      todo: state.filter((item) => item.state === `todo`),
+    }),
   );
 
   app.post<{
