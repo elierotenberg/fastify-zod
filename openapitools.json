@@ -6,13 +6,13 @@
     "generators": {
       "v1": {
         "generatorName": "typescript-fetch",
-        "glob": "generated-spec.yml",
-        "output": "./generated-openapi-client",
+        "glob": "openapi.json",
+        "output": "./test-openapi-client",
         "skipValidateSpec": true,
         "additionalProperties": {
           "supportsES6": true,
-          "modelPropertyNaming": "snake_case",
-          "npmName": "fastify-zod-example-openapi-client",
+          "modelPropertyNaming": "camelCase",
+          "npmName": "fastify-zod-test-openapi-client",
           "typescriptThreePlus": true,
           "generateAliasAsModel": true
         }
