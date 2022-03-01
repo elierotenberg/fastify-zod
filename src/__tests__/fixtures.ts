@@ -149,7 +149,7 @@ export const createTestServer = ({
 
   f.zod.get(
     `/42`,
-    { operationId: `getFooBar`, reply: `FortyTwo` },
+    { operationId: `getFortyTwo`, reply: `FortyTwo` },
     async () => 42,
   );
 

@@ -103,7 +103,7 @@ describe(`createPlugin`, () => {
         },
         paths: {
           "/item": {
-            delete: {
+            get: {
               operationId: `getTodoItems`,
               responses: {
                 "200": {
@@ -145,7 +145,7 @@ describe(`createPlugin`, () => {
             },
           },
           "/item/grouped-by-status": {
-            delete: {
+            get: {
               operationId: `getTodoItemsGroupedByStatus`,
               responses: {
                 "200": {
@@ -198,8 +198,8 @@ describe(`createPlugin`, () => {
             },
           },
           "/42": {
-            delete: {
-              operationId: `getFooBar`,
+            get: {
+              operationId: `getFortyTwo`,
               responses: {
                 "200": {
                   description: `Default Response`,

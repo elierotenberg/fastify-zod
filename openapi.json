@@ -107,7 +107,7 @@
   },
   "paths": {
     "/item": {
-      "delete": {
+      "get": {
         "operationId": "getTodoItems",
         "responses": {
           "200": {
@@ -149,7 +149,7 @@
       }
     },
     "/item/grouped-by-status": {
-      "delete": {
+      "get": {
         "operationId": "getTodoItemsGroupedByStatus",
         "responses": {
           "200": {
@@ -202,8 +202,8 @@
       }
     },
     "/42": {
-      "delete": {
-        "operationId": "getFooBar",
+      "get": {
+        "operationId": "getFortyTwo",
         "responses": {
           "200": {
             "description": "Default Response",

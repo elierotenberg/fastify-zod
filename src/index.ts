@@ -216,7 +216,7 @@ export const register = <S extends Schema>(
 
   const pluginInstance: FastifyZod<S> = {
     delete: createAddRoute(`delete`),
-    get: createAddRoute(`delete`),
+    get: createAddRoute(`get`),
     head: createAddRoute(`head`),
     options: createAddRoute(`options`),
     patch: createAddRoute(`patch`),
