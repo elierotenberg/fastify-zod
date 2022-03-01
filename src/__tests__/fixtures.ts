@@ -1,8 +1,8 @@
-import fastify, { FastifyInstance, FastifyServerOptions } from "fastify";
+import fastify, { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { BadRequest, NotFound } from "http-errors";
 
-import { FastifyZod, register } from "..";
+import { buildJsonSchemas, FastifyZod, register } from "..";
 
 const TodoItemId = z.object({
   id: z.string().uuid(),
@@ -38,12 +38,14 @@ const TodoItemsGroupedByStatus = z.object({
 
 type TodoItemsGroupedByStatus = z.infer<typeof TodoItemsGroupedByStatus>;
 
+const FortyTwo = z.literal(42);
+
 const schema = {
   TodoItemId,
-  TodoState,
   TodoItem,
   TodoItems,
   TodoItemsGroupedByStatus,
+  FortyTwo,
 };
 
 // eslint-disable-next-line quotes
@@ -53,14 +55,18 @@ declare module "fastify" {
   }
 }
 
-export const createTestServer = (
-  opts?: FastifyServerOptions,
-): FastifyInstance => {
-  const f = fastify(opts);
+type CreateTestServerOptions = {
+  readonly target?: `jsonSchema7` | `openApi3`;
+};
 
+export const createTestServer = ({
+  target,
+}: CreateTestServerOptions = {}): FastifyInstance => {
+  const f = fastify();
+
+  const jsonSchemas = buildJsonSchemas(schema, { target });
   register(f, {
-    $id: `test-schema`,
-    schema,
+    jsonSchemas,
     swagger: {
       routePrefix: `/openapi`,
       openapi: {
@@ -139,6 +145,12 @@ export const createTestServer = (
       );
       return nextItem;
     },
+  );
+
+  f.zod.get(
+    `/42`,
+    { operationId: `getFooBar`, reply: `FortyTwo` },
+    async () => 42,
   );
 
   return f;

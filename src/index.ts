@@ -8,13 +8,21 @@ import fastifySwagger, { SwaggerOptions } from "fastify-swagger";
 import { z, ZodType } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { flattenJsonSchema, translateRef } from "./JsonSchema";
+import { flattenJsonSchema, JsonSchema } from "./JsonSchema";
 
 type Schema<Key extends string = string> = {
   readonly [K in Key]: ZodType<unknown>;
 };
 
-type SchemaKey<S extends Schema> = S extends Schema<infer Key> ? Key : never;
+type SchemaKey<S extends Schema> = S extends Schema<infer Key>
+  ? Key & string
+  : never;
+type SchemaKeyOrDescription<S extends Schema> =
+  | SchemaKey<S>
+  | {
+      readonly description: string;
+      readonly key: SchemaKey<S>;
+    };
 
 type SchemaType<S extends Schema, Key extends SchemaKey<S>> = z.infer<S[Key]>;
 
@@ -52,7 +60,6 @@ type RouteConfig<
   readonly method: M;
   readonly operationId: string;
   readonly description?: string;
-  readonly schema: S;
   readonly params?:
     | Exclude<Params, void>
     | {
@@ -89,28 +96,68 @@ export type FastifyZod<S extends Schema> = {
   ) => void;
 };
 
-type RegisterOptions<S extends Schema> = {
-  readonly $id: string;
-  readonly schema: S;
+type BuildJsonSchemasOptions = {
+  readonly target?: `jsonSchema7` | `openApi3`;
+};
+
+type $ref<S extends Schema> = (key: SchemaKeyOrDescription<S>) => {
+  readonly $ref: string;
+  readonly description?: string;
+};
+
+type BuildJsonSchemasResult<S extends Schema> = {
+  readonly $ref: $ref<S>;
+  readonly schemas: JsonSchema[];
+};
+
+/**
+ * @deprecated
+ */
+export const buildJsonSchema = <$id extends string, T>(
+  Type: ZodType<T>,
+  $id: $id,
+): JsonSchema => buildJsonSchemas({ [$id]: Type }).schemas[0];
+
+export const buildJsonSchemas = <S extends Schema>(
+  schema: S,
+  { target }: BuildJsonSchemasOptions = {},
+): BuildJsonSchemasResult<S> => {
+  const zodSchema = z.object(schema);
+  const root: JsonSchema = {
+    $id: ``,
+    ...zodToJsonSchema(zodSchema, {
+      target: target ?? `jsonSchema7`,
+    }),
+  };
+
+  const schemas = flattenJsonSchema(root);
+
+  const $ref: $ref<S> = (key) =>
+    typeof key === `string`
+      ? {
+          $ref: `${key}#`,
+        }
+      : {
+          $ref: `${key.key}#`,
+          description: key.description,
+        };
+
+  return {
+    schemas,
+    $ref,
+  };
+};
+export type RegisterOptions<S extends Schema> = {
+  readonly jsonSchemas: BuildJsonSchemasResult<S>;
   readonly swagger?: SwaggerOptions;
 };
 
 export const register = <S extends Schema>(
   f: FastifyInstance,
-  { $id, schema, swagger }: RegisterOptions<S>,
+  { jsonSchemas: { schemas, $ref }, swagger }: RegisterOptions<S>,
 ): void => {
-  const zodSchema = z.object(schema);
-  const jsonSchema = {
-    $id,
-    ...zodToJsonSchema(zodSchema, {
-      basePath: [`${$id}#`],
-    }),
-  };
-
-  const jsonSchemas = flattenJsonSchema(jsonSchema);
-
-  for (const jsonSchema of jsonSchemas) {
-    f.addSchema(jsonSchema);
+  for (const schema of schemas) {
+    f.addSchema(schema);
   }
 
   if (swagger) {
@@ -121,21 +168,6 @@ export const register = <S extends Schema>(
       },
     } as unknown as SwaggerOptions);
   }
-
-  const $ref = (
-    key: string | { readonly description: string; readonly key: string },
-  ): {
-    readonly $ref: string;
-    readonly description?: string;
-  } =>
-    typeof key === `string`
-      ? {
-          $ref: translateRef($id, `${$id}#/properties/${key}`),
-        }
-      : {
-          $ref: translateRef($id, `${$id}#/properties/${key.key}`),
-          description: key.description,
-        };
 
   const addRoute = <
     M extends Lowercase<HTTPMethods> = Lowercase<HTTPMethods>,
@@ -161,11 +193,13 @@ export const register = <S extends Schema>(
       {
         schema: {
           operationId,
-          params: params ? $ref(params) : undefined,
-          body: body ? $ref(body) : undefined,
+          params: params
+            ? $ref(params as SchemaKeyOrDescription<S>)
+            : undefined,
+          body: body ? $ref(body as SchemaKeyOrDescription<S>) : undefined,
           response: reply
             ? {
-                200: $ref(reply),
+                200: $ref(reply as SchemaKeyOrDescription<S>),
               }
             : undefined,
           ...fastifySchema,
@@ -178,7 +212,7 @@ export const register = <S extends Schema>(
   const createAddRoute =
     <M extends Lowercase<HTTPMethods>>(method: M): FastifyZod<S>[M] =>
     (url, config, handler) =>
-      addRoute({ url, handler, method, schema, ...config });
+      addRoute({ url, handler, method, ...config });
 
   const pluginInstance: FastifyZod<S> = {
     delete: createAddRoute(`delete`),

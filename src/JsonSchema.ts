@@ -1,4 +1,5 @@
 import { z } from "zod";
+import deepEqual from "fast-deep-equal";
 
 import { isZod } from "./util";
 
@@ -12,11 +13,16 @@ const isRef = isZod(Ref);
 
 const JsonSchema = z.object({
   $id: z.string(),
+  $schema: z.string().optional(),
 });
 
-type JsonSchema = z.infer<typeof JsonSchema>;
+export type JsonSchema = z.infer<typeof JsonSchema>;
 
 const isJsonSchema = isZod(JsonSchema);
+
+const JsonSchemaArray = z.array(JsonSchema);
+
+const isJsonSchemaArray = isZod(JsonSchemaArray);
 
 const JsonSchemaObjectType = z.object({
   type: z.literal(`object`),
@@ -43,6 +49,14 @@ const resolveRef = (schemas: JsonSchema[], $ref: string): unknown => {
     return current[segment];
   }, schema);
 };
+
+const with$schema = (schema: JsonSchema, $schema?: string): JsonSchema =>
+  $schema
+    ? {
+        ...schema,
+        $schema,
+      }
+    : schema;
 
 const replaceRef = (
   input: unknown,
@@ -72,26 +86,19 @@ const replaceRef = (
 const getExtractedRef = ($ref: string): string =>
   $ref.replaceAll(/#|\//g, `_`).replaceAll(/_+/g, `_`);
 
-const getRootPropertyId = ($id: string, key: string): string => `${$id}_${key}`;
-
-export const translateRef = ($id: string, $ref: string): string => {
-  if ($ref.startsWith(`${$id}#/properties/`)) {
-    const [key, path] = $ref.split(`${$id}#/properties/`);
-    return translateRef($id, `${getRootPropertyId($id, key)}#/${path}`);
-  }
-  return getExtractedRef($ref);
-};
-
 const extractRef = (schemas: JsonSchema[], $ref: string): JsonSchema[] => {
   const ref = resolveRef(schemas, $ref);
   if (!isRecord(ref)) {
     throw new Error(`ref not found while resovling ${$ref}`);
   }
   const $id = getExtractedRef($ref);
-  const schema = {
-    $id,
-    ...ref,
-  };
+  const schema = with$schema(
+    {
+      $id,
+      ...ref,
+    },
+    schemas[0].$schema,
+  );
   return [
     schema,
     ...schemas.map((prevSchema) => {
@@ -139,7 +146,6 @@ const extractRefs = (schemas: JsonSchema[]): JsonSchema[] => {
   }
   return schemas;
 };
-
 const rootPropertiesToJsonSchemas = (
   schema: JsonSchema & JsonSchemaObjectType,
 ): JsonSchema[] =>
@@ -152,10 +158,13 @@ const rootPropertiesToJsonSchemas = (
       }
       return [
         ...schemas,
-        {
-          $id: getRootPropertyId(schema.$id, key),
-          ...value,
-        },
+        with$schema(
+          {
+            $id: key,
+            ...value,
+          },
+          schema.$schema,
+        ),
       ];
     },
     [],
@@ -170,8 +179,8 @@ const extractRootPropertiesRefs = (
       schemas.map((prevSchema) => {
         const nextSchema = replaceRef(
           prevSchema,
-          `${schema.$id}#/properties/${key}`,
-          `${getRootPropertyId(schema.$id, key)}#`,
+          `#/properties/${key}`,
+          `${key}#`,
         );
         if (!isJsonSchema(nextSchema)) {
           throw new Error(`not a JsonSchema`);
@@ -181,12 +190,63 @@ const extractRootPropertiesRefs = (
     schemas,
   );
 
+const deepMap = (value: unknown, map: (value: unknown) => unknown): unknown => {
+  const next = map(value);
+  if (Array.isArray(next)) {
+    return next.map((item) => deepMap(item, map));
+  }
+  if (typeof next === `object` && next !== null) {
+    return Object.entries(next).reduce(
+      (next, [key, value]) => ({
+        ...next,
+        [key]: deepMap(value, map),
+      }),
+      Object.create(null),
+    );
+  }
+  return next;
+};
+
+const mergeTopLevelRefs = (schemas: JsonSchema[], k = 0): JsonSchema[] => {
+  if (k >= schemas.length) {
+    return schemas;
+  }
+
+  const { $id, $schema, ...schema } = schemas[k];
+  void $schema;
+  let dirty = false;
+  const nextSchemas = deepMap(schemas, (value) => {
+    if (dirty) {
+      return value;
+    }
+    if (value !== schemas[k] && deepEqual(value, schema)) {
+      dirty = true;
+      return {
+        $ref: `${$id}#`,
+      };
+    }
+    return value;
+  });
+
+  if (!isJsonSchemaArray(nextSchemas)) {
+    throw new Error(`not a JsonSchemaArray`);
+  }
+
+  if (dirty) {
+    return mergeTopLevelRefs(nextSchemas, k);
+  }
+
+  return mergeTopLevelRefs(nextSchemas, k + 1);
+};
+
 export const flattenJsonSchema = (schema: JsonSchema): JsonSchema[] => {
   if (!isJsonSchemaObjectType(schema)) {
     throw new Error(`input schema is not an object type`);
   }
 
-  return extractRefs(
-    extractRootPropertiesRefs(schema, rootPropertiesToJsonSchemas(schema)),
+  return mergeTopLevelRefs(
+    extractRefs(
+      extractRootPropertiesRefs(schema, rootPropertiesToJsonSchemas(schema)),
+    ),
   );
 };

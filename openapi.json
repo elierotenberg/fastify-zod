@@ -7,16 +7,15 @@
   },
   "components": {
     "schemas": {
-      "test-schema_TodoItemId_properties_id": {
+      "TodoItemId_properties_id": {
         "type": "string",
         "format": "uuid"
       },
-      "test-schema_TodoItemId": {
+      "TodoItemId": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/components/schemas/TodoItemId_properties_id"
           }
         },
         "required": [
@@ -24,15 +23,7 @@
         ],
         "additionalProperties": false
       },
-      "test-schema_TodoState": {
-        "type": "string",
-        "enum": [
-          "todo",
-          "in progress",
-          "done"
-        ]
-      },
-      "test-schema_TodoItem": {
+      "TodoItem": {
         "type": "object",
         "properties": {
           "id": {
@@ -62,13 +53,13 @@
         ],
         "additionalProperties": false
       },
-      "test-schema_TodoItems": {
+      "TodoItems": {
         "type": "object",
         "properties": {
           "todoItems": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/test-schema_TodoItem"
+              "$ref": "#/components/schemas/TodoItem"
             }
           }
         },
@@ -77,25 +68,25 @@
         ],
         "additionalProperties": false
       },
-      "test-schema_TodoItemsGroupedByStatus": {
+      "TodoItemsGroupedByStatus": {
         "type": "object",
         "properties": {
           "todo": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/test-schema_TodoItem"
+              "$ref": "#/components/schemas/TodoItem"
             }
           },
           "inProgress": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/test-schema_TodoItem"
+              "$ref": "#/components/schemas/TodoItem"
             }
           },
           "done": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/test-schema_TodoItem"
+              "$ref": "#/components/schemas/TodoItem"
             }
           }
         },
@@ -105,6 +96,12 @@
           "done"
         ],
         "additionalProperties": false
+      },
+      "FortyTwo": {
+        "type": "number",
+        "enum": [
+          42
+        ]
       }
     }
   },
@@ -118,7 +115,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/test-schema_TodoItems",
+                  "$ref": "#/components/schemas/TodoItems",
                   "description": "The list of Todo Items"
                 }
               }
@@ -132,7 +129,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/test-schema_TodoItem"
+                "$ref": "#/components/schemas/TodoItem"
               }
             }
           }
@@ -143,7 +140,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/test-schema_TodoItems"
+                  "$ref": "#/components/schemas/TodoItems"
                 }
               }
             }
@@ -160,7 +157,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/test-schema_TodoItemsGroupedByStatus"
+                  "$ref": "#/components/schemas/TodoItemsGroupedByStatus"
                 }
               }
             }
@@ -175,7 +172,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/test-schema_TodoItem"
+                "$ref": "#/components/schemas/TodoItem"
               }
             }
           }
@@ -186,8 +183,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/components/schemas/TodoItemId_properties_id"
             }
           }
         ],
@@ -197,7 +193,24 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/test-schema_TodoItem"
+                  "$ref": "#/components/schemas/TodoItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/42": {
+      "delete": {
+        "operationId": "getFooBar",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FortyTwo"
                 }
               }
             }

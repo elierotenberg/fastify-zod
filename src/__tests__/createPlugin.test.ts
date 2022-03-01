@@ -1,202 +1,221 @@
 import { createTestServer } from "./fixtures";
 
-test(`createPlugin`, async () => {
-  const f = createTestServer();
+describe(`createPlugin`, () => {
+  for (const target of [`jsonSchema7`, `openApi3`, undefined] as const) {
+    test(`target: ${target ?? `none`}`, async () => {
+      const f = createTestServer({ target });
 
-  const spec = await f
-    .inject({
-      method: `get`,
-      url: `/openapi/json`,
-    })
-    .then((res) => res.json());
+      const spec = await f
+        .inject({
+          method: `get`,
+          url: `/openapi/json`,
+        })
+        .then((res) => res.json());
 
-  expect(spec).toEqual({
-    openapi: `3.0.3`,
-    info: {
-      title: `Zod Fastify Test Server`,
-      description: `API for Zod Fastify Test Server`,
-      version: `0.0.0`,
-    },
-    components: {
-      schemas: {
-        "test-schema_TodoItemId_properties_id": {
-          type: `string`,
-          format: `uuid`,
+      expect(spec).toEqual({
+        openapi: `3.0.3`,
+        info: {
+          title: `Zod Fastify Test Server`,
+          description: `API for Zod Fastify Test Server`,
+          version: `0.0.0`,
         },
-        "test-schema_TodoItemId": {
-          type: `object`,
-          properties: {
-            id: {
+        components: {
+          schemas: {
+            TodoItemId_properties_id: {
               type: `string`,
               format: `uuid`,
             },
+            TodoItemId: {
+              type: `object`,
+              properties: {
+                id: {
+                  $ref: `#/components/schemas/TodoItemId_properties_id`,
+                },
+              },
+              required: [`id`],
+              additionalProperties: false,
+            },
+            TodoItem: {
+              type: `object`,
+              properties: {
+                id: {
+                  type: `string`,
+                  format: `uuid`,
+                },
+                label: {
+                  type: `string`,
+                },
+                dueDate: {
+                  type: `string`,
+                  format: `date-time`,
+                },
+                state: {
+                  type: `string`,
+                  enum: [`todo`, `in progress`, `done`],
+                },
+              },
+              required: [`id`, `label`, `state`],
+              additionalProperties: false,
+            },
+            TodoItems: {
+              type: `object`,
+              properties: {
+                todoItems: {
+                  type: `array`,
+                  items: {
+                    $ref: `#/components/schemas/TodoItem`,
+                  },
+                },
+              },
+              required: [`todoItems`],
+              additionalProperties: false,
+            },
+            TodoItemsGroupedByStatus: {
+              type: `object`,
+              properties: {
+                todo: {
+                  type: `array`,
+                  items: {
+                    $ref: `#/components/schemas/TodoItem`,
+                  },
+                },
+                inProgress: {
+                  type: `array`,
+                  items: {
+                    $ref: `#/components/schemas/TodoItem`,
+                  },
+                },
+                done: {
+                  type: `array`,
+                  items: {
+                    $ref: `#/components/schemas/TodoItem`,
+                  },
+                },
+              },
+              required: [`todo`, `inProgress`, `done`],
+              additionalProperties: false,
+            },
+            FortyTwo: {
+              type: `number`,
+              enum: [42],
+            },
           },
-          required: [`id`],
-          additionalProperties: false,
         },
-        "test-schema_TodoState": {
-          type: `string`,
-          enum: [`todo`, `in progress`, `done`],
-        },
-        "test-schema_TodoItem": {
-          type: `object`,
-          properties: {
-            id: {
-              type: `string`,
-              format: `uuid`,
+        paths: {
+          "/item": {
+            delete: {
+              operationId: `getTodoItems`,
+              responses: {
+                "200": {
+                  description: `The list of Todo Items`,
+                  content: {
+                    "application/json": {
+                      schema: {
+                        $ref: `#/components/schemas/TodoItems`,
+                        description: `The list of Todo Items`,
+                      },
+                    },
+                  },
+                },
+              },
             },
-            label: {
-              type: `string`,
-            },
-            dueDate: {
-              type: `string`,
-              format: `date-time`,
-            },
-            state: {
-              type: `string`,
-              enum: [`todo`, `in progress`, `done`],
-            },
-          },
-          required: [`id`, `label`, `state`],
-          additionalProperties: false,
-        },
-        "test-schema_TodoItems": {
-          type: `object`,
-          properties: {
-            todoItems: {
-              type: `array`,
-              items: {
-                $ref: `#/components/schemas/test-schema_TodoItem`,
+            post: {
+              operationId: `postTodoItem`,
+              requestBody: {
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/TodoItem`,
+                    },
+                  },
+                },
+              },
+              responses: {
+                "200": {
+                  description: `Default Response`,
+                  content: {
+                    "application/json": {
+                      schema: {
+                        $ref: `#/components/schemas/TodoItems`,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
-          required: [`todoItems`],
-          additionalProperties: false,
-        },
-        "test-schema_TodoItemsGroupedByStatus": {
-          type: `object`,
-          properties: {
-            todo: {
-              type: `array`,
-              items: {
-                $ref: `#/components/schemas/test-schema_TodoItem`,
-              },
-            },
-            inProgress: {
-              type: `array`,
-              items: {
-                $ref: `#/components/schemas/test-schema_TodoItem`,
-              },
-            },
-            done: {
-              type: `array`,
-              items: {
-                $ref: `#/components/schemas/test-schema_TodoItem`,
+          "/item/grouped-by-status": {
+            delete: {
+              operationId: `getTodoItemsGroupedByStatus`,
+              responses: {
+                "200": {
+                  description: `Default Response`,
+                  content: {
+                    "application/json": {
+                      schema: {
+                        $ref: `#/components/schemas/TodoItemsGroupedByStatus`,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
-          required: [`todo`, `inProgress`, `done`],
-          additionalProperties: false,
-        },
-      },
-    },
-    paths: {
-      "/item": {
-        delete: {
-          operationId: `getTodoItems`,
-          responses: {
-            "200": {
-              description: `The list of Todo Items`,
-              content: {
-                "application/json": {
+          "/item/{id}": {
+            put: {
+              operationId: `putTodoItem`,
+              requestBody: {
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/TodoItem`,
+                    },
+                  },
+                },
+              },
+              parameters: [
+                {
+                  in: `path`,
+                  name: `id`,
+                  required: true,
                   schema: {
-                    $ref: `#/components/schemas/test-schema_TodoItems`,
-                    description: `The list of Todo Items`,
+                    $ref: `#/components/schemas/TodoItemId_properties_id`,
+                  },
+                },
+              ],
+              responses: {
+                "200": {
+                  description: `Default Response`,
+                  content: {
+                    "application/json": {
+                      schema: {
+                        $ref: `#/components/schemas/TodoItem`,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "/42": {
+            delete: {
+              operationId: `getFooBar`,
+              responses: {
+                "200": {
+                  description: `Default Response`,
+                  content: {
+                    "application/json": {
+                      schema: {
+                        $ref: `#/components/schemas/FortyTwo`,
+                      },
+                    },
                   },
                 },
               },
             },
           },
         },
-        post: {
-          operationId: `postTodoItem`,
-          requestBody: {
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: `#/components/schemas/test-schema_TodoItem`,
-                },
-              },
-            },
-          },
-          responses: {
-            "200": {
-              description: `Default Response`,
-              content: {
-                "application/json": {
-                  schema: {
-                    $ref: `#/components/schemas/test-schema_TodoItems`,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      "/item/grouped-by-status": {
-        delete: {
-          operationId: `getTodoItemsGroupedByStatus`,
-          responses: {
-            "200": {
-              description: `Default Response`,
-              content: {
-                "application/json": {
-                  schema: {
-                    $ref: `#/components/schemas/test-schema_TodoItemsGroupedByStatus`,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      "/item/{id}": {
-        put: {
-          operationId: `putTodoItem`,
-          requestBody: {
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: `#/components/schemas/test-schema_TodoItem`,
-                },
-              },
-            },
-          },
-          parameters: [
-            {
-              in: `path`,
-              name: `id`,
-              required: true,
-              schema: {
-                type: `string`,
-                format: `uuid`,
-              },
-            },
-          ],
-          responses: {
-            "200": {
-              description: `Default Response`,
-              content: {
-                "application/json": {
-                  schema: {
-                    $ref: `#/components/schemas/test-schema_TodoItem`,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+      });
+    });
+  }
 });

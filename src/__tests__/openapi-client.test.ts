@@ -1,7 +1,7 @@
 import {
   Configuration,
   DefaultApi,
-  TestSchemaTodoItemStateEnum,
+  TodoItemStateEnum,
 } from "fastify-zod-test-openapi-client";
 import { tExpect } from "typed-jest-expect";
 
@@ -21,10 +21,10 @@ test(`openapi-client`, async () => {
 
     await tExpect(
       client.postTodoItem({
-        testSchemaTodoItem: {
+        todoItem: {
           id: `e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
           label: `todo`,
-          state: TestSchemaTodoItemStateEnum.Todo,
+          state: TodoItemStateEnum.Todo,
           dueDate: new Date(0),
         },
       }),
@@ -33,7 +33,7 @@ test(`openapi-client`, async () => {
         {
           id: `e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
           label: `todo`,
-          state: TestSchemaTodoItemStateEnum.Todo,
+          state: TodoItemStateEnum.Todo,
           dueDate: expect.any(Date),
         },
       ],
