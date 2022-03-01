@@ -143,17 +143,17 @@ $ openapi-generator-cli generate
 
 ### buildJsonSchema options object
 
-#### **target**?: _jsonSchema7_ (default) or _openApi3_
+#### **target**?: `openApi3` | `jsonSchema7` defaults to (jsonSchema7)
 
 Generates either `jsonSchema7` or `openApi3` schema. See [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema#options-object).
 
 ### buildJsonSchemas options object
 
-#### **target**?: _jsonSchema7_ (default) or _openApi3_
+#### **target**?: `openApi3` | `jsonSchema7` defaults to (jsonSchema7)
 
 Generates either `jsonSchema7` or `openApi3` schema. See [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema#options-object).
 
-#### mergeRefs?: boolean
+#### mergeRefs?: boolean defaults to `false`
 
 Recursively merge structurally-equivalent schemas as `$ref`s.
 
