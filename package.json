@@ -1,6 +1,6 @@
 {
   "name": "fastify-zod",
-  "version": "1.0.0-rc2",
+  "version": "1.0.0-rc3",
   "description": "Zod integration with Fastify",
   "main": "build/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "clean": "rm -rf build",
     "build:types": "tsc -p . --emitDeclarationOnly",
     "build:babel": "babel src --out-dir build --extensions '.ts' --source-maps",
-    "build:openapi-spec": "node build/__tests__/generate-spec.js",
+    "build:openapi-spec": "node build/__tests__/generate-spec.fixtures.js",
     "build:openapi-client": "rm -rf test-openapi-client && openapi-generator-cli generate && cd test-openapi-client && npm i && cd .. && npm i file:./test-openapi-client --save-dev",
     "build": "npm run clean && npm run build:types && npm run build:babel && npm run build:openapi-spec && npm run build:openapi-client",
     "test": "jest"
@@ -54,9 +54,11 @@
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.26",
+    "@types/js-yaml": "^4.0.5",
     "fast-deep-equal": "^3.1.3",
     "fastify": "^3.27.2",
-    "fastify-swagger": "github:elierotenberg/fastify-swagger#fix-553",
+    "fastify-swagger": "^4.17.0",
+    "js-yaml": "^4.1.0",
     "tslib": "^2.3.1",
     "typed-jest-expect": "^0.0.1",
     "zod": "^3.12.0",
