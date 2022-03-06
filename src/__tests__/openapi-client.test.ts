@@ -1,14 +1,26 @@
 import {
   Configuration,
   DefaultApi,
-  TodoItemStateEnum,
+  SchemaTodoItemState,
 } from "fastify-zod-test-openapi-client";
 import { tExpect } from "typed-jest-expect";
 
-import { createTestServer } from "./fixtures";
+import { buildJsonSchemas } from "..";
+
+import { models } from "./models.fixtures";
+import { createTestServer, openApiOptions } from "./server.fixtures";
 
 test(`openapi-client`, async () => {
-  const f = createTestServer();
+  const f = createTestServer(
+    {},
+    {
+      jsonSchemas: buildJsonSchemas(models, {}),
+      swaggerOptions: {
+        ...openApiOptions,
+        transformSpec: {},
+      },
+    },
+  );
 
   const basePath = await f.listen(0);
 
@@ -21,11 +33,11 @@ test(`openapi-client`, async () => {
 
     await tExpect(
       client.postTodoItem({
-        todoItem: {
+        schemaTodoItem: {
           id: `e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
           label: `todo`,
-          state: TodoItemStateEnum.Todo,
-          dueDate: new Date(0),
+          state: SchemaTodoItemState.Todo,
+          dueDateMs: new Date(1337).getTime(),
         },
       }),
     ).resolves.toEqual({
@@ -33,8 +45,8 @@ test(`openapi-client`, async () => {
         {
           id: `e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
           label: `todo`,
-          state: TodoItemStateEnum.Todo,
-          dueDate: expect.any(Date),
+          state: SchemaTodoItemState.Todo,
+          dueDateMs: new Date(1337).getTime(),
         },
       ],
     });

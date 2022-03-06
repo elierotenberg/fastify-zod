@@ -1,0 +1,481 @@
+import { SpecTransformer } from "../SpecTransformer";
+
+describe(`SpecTransformer`, () => {
+  test(`transform`, () => {
+    const originalSpec = {
+      openapi: `3.0.3`,
+      info: {
+        title: `Fastify Zod Test Server`,
+        description: `Test Server for Fastify Zod`,
+        version: `0.0.0`,
+      },
+      components: {
+        schemas: {
+          Schema: {
+            type: `object`,
+            properties: {
+              TodoState: {
+                type: `string`,
+                enum: [`todo`, `in progress`, `done`],
+              },
+              TodoItemId: {
+                type: `object`,
+                properties: {
+                  id: {
+                    type: `string`,
+                    format: `uuid`,
+                  },
+                },
+                required: [`id`],
+                additionalProperties: false,
+              },
+              TodoItem: {
+                type: `object`,
+                properties: {
+                  id: {
+                    type: `string`,
+                    format: `uuid`,
+                  },
+                  label: {
+                    type: `string`,
+                  },
+                  dueDateMs: {
+                    type: `integer`,
+                    minimum: 0,
+                  },
+                  state: {
+                    type: `string`,
+                    enum: [`todo`, `in progress`, `done`],
+                  },
+                },
+                required: [`id`, `label`, `state`],
+                additionalProperties: false,
+              },
+              TodoItems: {
+                type: `object`,
+                properties: {
+                  todoItems: {
+                    type: `array`,
+                    items: {
+                      $ref: `#/properties/TodoItem`,
+                    },
+                  },
+                },
+                required: [`todoItems`],
+                additionalProperties: false,
+              },
+              TodoItemsGroupedByStatus: {
+                type: `object`,
+                properties: {
+                  todo: {
+                    type: `array`,
+                    items: {
+                      $ref: `#/properties/TodoItem`,
+                    },
+                  },
+                  inProgress: {
+                    type: `array`,
+                    items: {
+                      $ref: `#/properties/TodoItem`,
+                    },
+                  },
+                  done: {
+                    type: `array`,
+                    items: {
+                      $ref: `#/properties/TodoItem`,
+                    },
+                  },
+                },
+                required: [`todo`, `inProgress`, `done`],
+                additionalProperties: false,
+              },
+              FortyTwo: {
+                type: `number`,
+                enum: [42],
+              },
+            },
+            required: [
+              `TodoState`,
+              `TodoItemId`,
+              `TodoItem`,
+              `TodoItems`,
+              `TodoItemsGroupedByStatus`,
+              `FortyTwo`,
+            ],
+            additionalProperties: false,
+          },
+        },
+      },
+      paths: {
+        "/documentation_transformed/json": {
+          get: {
+            responses: {
+              "200": {
+                description: `Default Response`,
+              },
+            },
+          },
+        },
+        "/documentation_transformed/yaml": {
+          get: {
+            responses: {
+              "200": {
+                description: `Default Response`,
+              },
+            },
+          },
+        },
+        "/item": {
+          get: {
+            operationId: `getTodoItems`,
+            responses: {
+              "200": {
+                description: `The list of Todo Items`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema/properties/TodoItems`,
+                      description: `The list of Todo Items`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          post: {
+            operationId: `postTodoItem`,
+            requestBody: {
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: `#/components/schemas/Schema/properties/TodoItem`,
+                  },
+                },
+              },
+            },
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema/properties/TodoItems`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/item/grouped-by-status": {
+          get: {
+            operationId: `getTodoItemsGroupedByStatus`,
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema/properties/TodoItemsGroupedByStatus`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/item/{id}": {
+          put: {
+            operationId: `putTodoItem`,
+            requestBody: {
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: `#/components/schemas/Schema/properties/TodoItem`,
+                  },
+                },
+              },
+            },
+            parameters: [
+              {
+                in: `path`,
+                name: `id`,
+                required: true,
+                schema: {
+                  type: `string`,
+                  format: `uuid`,
+                },
+              },
+            ],
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema/properties/TodoItem`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/42": {
+          get: {
+            operationId: `getFortyTwo`,
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema/properties/FortyTwo`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const t = new SpecTransformer(originalSpec);
+
+    t.transform();
+
+    expect(t.getSpec()).toEqual({
+      components: {
+        schemas: {
+          Schema_TodoItem: {
+            type: `object`,
+            properties: {
+              id: {
+                $ref: `#/components/schemas/Schema_TodoItem_id`,
+              },
+              label: {
+                $ref: `#/components/schemas/Schema_TodoItem_label`,
+              },
+              dueDateMs: {
+                $ref: `#/components/schemas/Schema_TodoItem_dueDateMs`,
+              },
+              state: {
+                $ref: `#/components/schemas/Schema_TodoItem_state`,
+              },
+            },
+            required: [`id`, `label`, `state`],
+            additionalProperties: false,
+          },
+          Schema_TodoItems: {
+            type: `object`,
+            properties: {
+              todoItems: {
+                $ref: `#/components/schemas/Schema_TodoItems_todoItems`,
+              },
+            },
+            required: [`todoItems`],
+            additionalProperties: false,
+          },
+          Schema_TodoItemsGroupedByStatus: {
+            type: `object`,
+            properties: {
+              todo: {
+                $ref: `#/components/schemas/Schema_TodoItemsGroupedByStatus_todo`,
+              },
+              inProgress: {
+                $ref: `#/components/schemas/Schema_TodoItemsGroupedByStatus_inProgress`,
+              },
+              done: {
+                $ref: `#/components/schemas/Schema_TodoItemsGroupedByStatus_done`,
+              },
+            },
+            required: [`todo`, `inProgress`, `done`],
+            additionalProperties: false,
+          },
+          Schema_FortyTwo: {
+            type: `number`,
+            enum: [42],
+          },
+          Schema_TodoItem_id: {
+            type: `string`,
+            format: `uuid`,
+          },
+          Schema_TodoItem_label: {
+            type: `string`,
+          },
+          Schema_TodoItem_dueDateMs: {
+            type: `integer`,
+            minimum: 0,
+          },
+          Schema_TodoItem_state: {
+            type: `string`,
+            enum: [`todo`, `in progress`, `done`],
+          },
+          Schema_TodoItems_todoItems: {
+            type: `array`,
+            items: {
+              $ref: `#/components/schemas/Schema_TodoItem`,
+            },
+          },
+          Schema_TodoItemsGroupedByStatus_todo: {
+            type: `array`,
+            items: {
+              $ref: `#/components/schemas/Schema_TodoItem`,
+            },
+          },
+          Schema_TodoItemsGroupedByStatus_inProgress: {
+            type: `array`,
+            items: {
+              $ref: `#/components/schemas/Schema_TodoItem`,
+            },
+          },
+          Schema_TodoItemsGroupedByStatus_done: {
+            type: `array`,
+            items: {
+              $ref: `#/components/schemas/Schema_TodoItem`,
+            },
+          },
+        },
+      },
+      paths: {
+        "/documentation_transformed/json": {
+          get: {
+            responses: {
+              "200": {
+                description: `Default Response`,
+              },
+            },
+          },
+        },
+        "/documentation_transformed/yaml": {
+          get: {
+            responses: {
+              "200": {
+                description: `Default Response`,
+              },
+            },
+          },
+        },
+        "/item": {
+          get: {
+            operationId: `getTodoItems`,
+            responses: {
+              "200": {
+                description: `The list of Todo Items`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema_TodoItems`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          post: {
+            operationId: `postTodoItem`,
+            requestBody: {
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: `#/components/schemas/Schema_TodoItem`,
+                  },
+                },
+              },
+            },
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema_TodoItems`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/item/grouped-by-status": {
+          get: {
+            operationId: `getTodoItemsGroupedByStatus`,
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema_TodoItemsGroupedByStatus`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/item/{id}": {
+          put: {
+            operationId: `putTodoItem`,
+            requestBody: {
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: `#/components/schemas/Schema_TodoItem`,
+                  },
+                },
+              },
+            },
+            parameters: [
+              {
+                in: `path`,
+                name: `id`,
+                required: true,
+                schema: {
+                  type: `string`,
+                  format: `uuid`,
+                },
+              },
+            ],
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema_TodoItem`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "/42": {
+          get: {
+            operationId: `getFortyTwo`,
+            responses: {
+              "200": {
+                description: `Default Response`,
+                content: {
+                  "application/json": {
+                    schema: {
+                      $ref: `#/components/schemas/Schema_FortyTwo`,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      openapi: `3.0.3`,
+      info: {
+        title: `Fastify Zod Test Server`,
+        description: `Test Server for Fastify Zod`,
+        version: `0.0.0`,
+      },
+    });
+  });
+});

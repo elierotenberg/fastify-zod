@@ -1,49 +1,20 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "title": "Zod Fastify Test Server",
-    "description": "API for Zod Fastify Test Server",
-    "version": "0.0.0"
-  },
   "components": {
     "schemas": {
-      "TodoItemId_properties_id": {
-        "type": "string",
-        "format": "uuid"
-      },
-      "TodoItemId": {
+      "Schema_TodoItem": {
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/TodoItemId_properties_id"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "additionalProperties": false
-      },
-      "TodoItem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/components/schemas/Schema_TodoItem_id"
           },
           "label": {
-            "type": "string"
+            "$ref": "#/components/schemas/Schema_TodoItem_label"
           },
-          "dueDate": {
-            "type": "string",
-            "format": "date-time"
+          "dueDateMs": {
+            "$ref": "#/components/schemas/Schema_TodoItem_dueDateMs"
           },
           "state": {
-            "type": "string",
-            "enum": [
-              "todo",
-              "in progress",
-              "done"
-            ]
+            "$ref": "#/components/schemas/Schema_TodoItem_state"
           }
         },
         "required": [
@@ -53,14 +24,11 @@
         ],
         "additionalProperties": false
       },
-      "TodoItems": {
+      "Schema_TodoItems": {
         "type": "object",
         "properties": {
           "todoItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TodoItem"
-            }
+            "$ref": "#/components/schemas/Schema_TodoItems_todoItems"
           }
         },
         "required": [
@@ -68,26 +36,17 @@
         ],
         "additionalProperties": false
       },
-      "TodoItemsGroupedByStatus": {
+      "Schema_TodoItemsGroupedByStatus": {
         "type": "object",
         "properties": {
           "todo": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TodoItem"
-            }
+            "$ref": "#/components/schemas/Schema_TodoItemsGroupedByStatus_todo"
           },
           "inProgress": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TodoItem"
-            }
+            "$ref": "#/components/schemas/Schema_TodoItemsGroupedByStatus_inProgress"
           },
           "done": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TodoItem"
-            }
+            "$ref": "#/components/schemas/Schema_TodoItemsGroupedByStatus_done"
           }
         },
         "required": [
@@ -97,15 +56,76 @@
         ],
         "additionalProperties": false
       },
-      "FortyTwo": {
+      "Schema_FortyTwo": {
         "type": "number",
         "enum": [
           42
         ]
+      },
+      "Schema_TodoItem_id": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "Schema_TodoItem_label": {
+        "type": "string"
+      },
+      "Schema_TodoItem_dueDateMs": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "Schema_TodoItem_state": {
+        "type": "string",
+        "enum": [
+          "todo",
+          "in progress",
+          "done"
+        ]
+      },
+      "Schema_TodoItems_todoItems": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Schema_TodoItem"
+        }
+      },
+      "Schema_TodoItemsGroupedByStatus_todo": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Schema_TodoItem"
+        }
+      },
+      "Schema_TodoItemsGroupedByStatus_inProgress": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Schema_TodoItem"
+        }
+      },
+      "Schema_TodoItemsGroupedByStatus_done": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Schema_TodoItem"
+        }
       }
     }
   },
   "paths": {
+    "/documentation_transformed/json": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/documentation_transformed/yaml": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
     "/item": {
       "get": {
         "operationId": "getTodoItems",
@@ -115,8 +135,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoItems",
-                  "description": "The list of Todo Items"
+                  "$ref": "#/components/schemas/Schema_TodoItems"
                 }
               }
             }
@@ -129,7 +148,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TodoItem"
+                "$ref": "#/components/schemas/Schema_TodoItem"
               }
             }
           }
@@ -140,7 +159,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoItems"
+                  "$ref": "#/components/schemas/Schema_TodoItems"
                 }
               }
             }
@@ -157,7 +176,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoItemsGroupedByStatus"
+                  "$ref": "#/components/schemas/Schema_TodoItemsGroupedByStatus"
                 }
               }
             }
@@ -172,7 +191,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TodoItem"
+                "$ref": "#/components/schemas/Schema_TodoItem"
               }
             }
           }
@@ -183,7 +202,8 @@
             "name": "id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/TodoItemId_properties_id"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -193,7 +213,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TodoItem"
+                  "$ref": "#/components/schemas/Schema_TodoItem"
                 }
               }
             }
@@ -210,7 +230,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FortyTwo"
+                  "$ref": "#/components/schemas/Schema_FortyTwo"
                 }
               }
             }
@@ -218,5 +238,11 @@
         }
       }
     }
+  },
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fastify Zod Test Server",
+    "description": "Test Server for Fastify Zod",
+    "version": "0.0.0"
   }
 }

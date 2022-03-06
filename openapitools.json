@@ -5,9 +5,8 @@
     "generators": {
       "v1": {
         "generatorName": "typescript-fetch",
-        "glob": "openapi.json",
+        "glob": "openapi.transformed.json",
         "output": "./test-openapi-client",
-        "skipValidateSpec": true,
         "additionalProperties": {
           "supportsES6": true,
           "modelPropertyNaming": "original",
