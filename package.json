@@ -1,6 +1,6 @@
 {
   "name": "fastify-zod",
-  "version": "1.0.0-rc3",
+  "version": "1.0.0-rc4",
   "description": "Zod integration with Fastify",
   "main": "build/index.js",
   "scripts": {
@@ -41,14 +41,14 @@
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
     "eslint": "^8.10.0",
-    "eslint-config-prettier": "^8.4.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "fastify-zod-test-openapi-client": "file:test-openapi-client",
     "http-errors": "^1.8.0",
     "jest": "^27.5.1",
     "node-fetch": "^2.6.7",
-    "pino-pretty": "^7.5.1",
+    "pino-pretty": "^7.5.3",
     "prettier": "^2.5.1",
     "typescript": "^4.6.2"
   },
@@ -61,7 +61,7 @@
     "js-yaml": "^4.1.0",
     "tslib": "^2.3.1",
     "typed-jest-expect": "^0.0.1",
-    "zod": "^3.12.0",
+    "zod": "^3.13.4",
     "zod-to-json-schema": "^3.11.3"
   }
 }
