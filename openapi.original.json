@@ -67,7 +67,7 @@
               "todoItems": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/properties/TodoItem"
+                  "$ref": "#/components/schemas/Schema/properties/TodoItem"
                 }
               }
             },
@@ -82,19 +82,19 @@
               "todo": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/properties/TodoItem"
+                  "$ref": "#/components/schemas/Schema/properties/TodoItem"
                 }
               },
               "inProgress": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/properties/TodoItem"
+                  "$ref": "#/components/schemas/Schema/properties/TodoItem"
                 }
               },
               "done": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/properties/TodoItem"
+                  "$ref": "#/components/schemas/Schema/properties/TodoItem"
                 }
               }
             },

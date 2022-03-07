@@ -58,7 +58,7 @@ const getChildSafe = (
 export const getAtPathSafe = (
   obj: unknown,
   path: string[],
-): [valueFound: unknown, value: unknown] => {
+): [valueFound: boolean, value: unknown] => {
   let current = obj;
 
   for (let k = 0; k < path.length; k++) {

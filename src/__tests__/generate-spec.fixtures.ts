@@ -13,7 +13,7 @@ const main = async (): Promise<void> => {
       jsonSchemas: buildJsonSchemas(models, {}),
       swaggerOptions: {
         ...openApiOptions,
-        transformSpec: {},
+        transformSpec: { options: {} },
       },
     },
   );

@@ -36,9 +36,12 @@ export const buildJsonSchemas = <M extends Models>(
 ): BuildJsonSchemasResult<M> => {
   const zodSchema = z.object(models);
 
-  const zodJsonSchema = zodToJsonSchema(zodSchema, { target: opts.target });
-
   const $id = opts.$id ?? `Schema`;
+
+  const zodJsonSchema = zodToJsonSchema(zodSchema, {
+    target: opts.target,
+    basePath: [`${$id}#`],
+  });
 
   const jsonSchema: JsonSchema = {
     $id,

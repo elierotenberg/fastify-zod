@@ -4,10 +4,18 @@ import { models } from "./models.fixtures";
 import { createTestServer } from "./server.fixtures";
 
 test(`FastifyZod`, async () => {
+  const jsonSchemas = buildJsonSchemas(models, {});
   const f = createTestServer(
     {},
     {
-      jsonSchemas: buildJsonSchemas(models, {}),
+      jsonSchemas,
+      swaggerOptions: {
+        transformSpec: {
+          options: {
+            mergeRefs: [jsonSchemas.$ref(`TodoState`)],
+          },
+        },
+      },
     },
   );
 

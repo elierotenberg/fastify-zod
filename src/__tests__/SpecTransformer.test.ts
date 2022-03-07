@@ -243,11 +243,23 @@ describe(`SpecTransformer`, () => {
 
     const t = new SpecTransformer(originalSpec);
 
-    t.transform();
+    const transformedSpec = t.transform({
+      mergeRefs: [{ $ref: `Schema#/properties/TodoState` }],
+    });
 
-    expect(t.getSpec()).toEqual({
+    expect(transformedSpec).toEqual({
+      openapi: `3.0.3`,
+      info: {
+        title: `Fastify Zod Test Server`,
+        description: `Test Server for Fastify Zod`,
+        version: `0.0.0`,
+      },
       components: {
         schemas: {
+          Schema_TodoState: {
+            type: `string`,
+            enum: [`todo`, `in progress`, `done`],
+          },
           Schema_TodoItem: {
             type: `object`,
             properties: {
@@ -261,7 +273,7 @@ describe(`SpecTransformer`, () => {
                 $ref: `#/components/schemas/Schema_TodoItem_dueDateMs`,
               },
               state: {
-                $ref: `#/components/schemas/Schema_TodoItem_state`,
+                $ref: `#/components/schemas/Schema_TodoState`,
               },
             },
             required: [`id`, `label`, `state`],
@@ -307,10 +319,6 @@ describe(`SpecTransformer`, () => {
           Schema_TodoItem_dueDateMs: {
             type: `integer`,
             minimum: 0,
-          },
-          Schema_TodoItem_state: {
-            type: `string`,
-            enum: [`todo`, `in progress`, `done`],
           },
           Schema_TodoItems_todoItems: {
             type: `array`,
@@ -367,6 +375,7 @@ describe(`SpecTransformer`, () => {
                   "application/json": {
                     schema: {
                       $ref: `#/components/schemas/Schema_TodoItems`,
+                      description: `The list of Todo Items`,
                     },
                   },
                 },
@@ -469,12 +478,6 @@ describe(`SpecTransformer`, () => {
             },
           },
         },
-      },
-      openapi: `3.0.3`,
-      info: {
-        title: `Fastify Zod Test Server`,
-        description: `Test Server for Fastify Zod`,
-        version: `0.0.0`,
       },
     });
   });

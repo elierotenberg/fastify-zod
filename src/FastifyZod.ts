@@ -7,7 +7,7 @@ import {
 import fastifySwagger, { FastifyDynamicSwaggerOptions } from "fastify-swagger";
 import * as yaml from "js-yaml";
 
-import { Spec, SpecTransformer, TransformOptions } from "./SpecTransformer";
+import { SpecTransformer, TransformOptions } from "./SpecTransformer";
 import { BuildJsonSchemasResult } from "./JsonSchema";
 import {
   Models,
@@ -121,17 +121,14 @@ export const register = <S extends Models>(
         transformSpec.routePrefix ?? `${originalRoutePrefix}_transformed`;
 
       const fetchTransformedSpec = async (): Promise<unknown> => {
-        const originalSpec = Spec.parse(
-          await f
-            .inject({
-              method: `get`,
-              url: `${baseSwaggerOptions.routePrefix ?? `documentation`}/json`,
-            })
-            .then((res) => res.json()),
-        );
+        const originalSpec = await f
+          .inject({
+            method: `get`,
+            url: `${baseSwaggerOptions.routePrefix ?? `documentation`}/json`,
+          })
+          .then((res) => res.json());
         const t = new SpecTransformer(originalSpec);
-        t.transform(transformSpec.options);
-        return t.getSpec();
+        return t.transform(transformSpec.options);
       };
 
       let cachedTransformedSpec: null | Promise<unknown> = null;

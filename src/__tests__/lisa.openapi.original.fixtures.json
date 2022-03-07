@@ -1,0 +1,2411 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "LISA",
+    "description": "LISA API",
+    "version": "0.0.1"
+  },
+  "components": {
+    "schemas": {
+      "T": {
+        "type": "object",
+        "properties": {
+          "JsonRecord": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "Email": {
+            "type": "string",
+            "format": "email"
+          },
+          "Uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "UserEmail": {
+            "type": "object",
+            "properties": {
+              "user_email": {
+                "$ref": "#/components/schemas/T/properties/Email"
+              }
+            },
+            "required": [
+              "user_email"
+            ],
+            "additionalProperties": false
+          },
+          "GroupRole": {
+            "type": "string",
+            "enum": [
+              "GroupAdmin",
+              "GroupAnalyst",
+              "GroupOwner",
+              "GroupRespondent",
+              "GroupReviewer"
+            ]
+          },
+          "ParticipantRole": {
+            "type": "string",
+            "enum": [
+              "ParticipantRespondent",
+              "ParticipantReviewer"
+            ]
+          },
+          "ParticipantId": {
+            "type": "object",
+            "properties": {
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "participant_group_id",
+              "participant_id"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroupId": {
+            "type": "object",
+            "properties": {
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "participant_group_id"
+            ],
+            "additionalProperties": false
+          },
+          "UserParticipantRelationship": {
+            "type": "string",
+            "enum": [
+              "Teacher",
+              "ParentCaregiver",
+              "OtherSchoolPersonnel",
+              "Clinician",
+              "Other"
+            ]
+          },
+          "Ack": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ]
+              }
+            },
+            "required": [
+              "ok"
+            ],
+            "additionalProperties": false
+          },
+          "ApiError": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.incorrect_user_email_or_password"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.no_authorization"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.expired"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.incorrect_participant"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.malformed"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.missing_jwt_payload"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.missing_jwt_sub"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.not_found"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.token.unverified"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.user_inactive"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "auth.user_not_found"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "user.already_exists"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "bad_request"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "not_found"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "unauthorized"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "forbidden"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "internal.not_found_after_upsert"
+                    ]
+                  }
+                ]
+              },
+              "payload": {
+                "$ref": "#/components/schemas/T/properties/JsonRecord"
+              },
+              "statusCode": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "payload",
+              "statusCode"
+            ],
+            "additionalProperties": false
+          },
+          "ApiErrorKind": {
+            "$ref": "#/components/schemas/T/properties/ApiError/properties/kind"
+          },
+          "AssessmentResponse": {
+            "type": "object",
+            "properties": {
+              "assessment_response_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "respondent_user_email": {
+                "type": "string",
+                "format": "email"
+              },
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "assessment_slug": {
+                "type": "string"
+              },
+              "assessment_version": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "assessment_response_events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "assessment_response_event_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "kind": {
+                      "type": "string"
+                    },
+                    "offset_ms": {
+                      "type": "integer"
+                    },
+                    "payload": {
+                      "type": "object",
+                      "additionalProperties": {}
+                    }
+                  },
+                  "required": [
+                    "assessment_response_event_id",
+                    "kind",
+                    "offset_ms",
+                    "payload"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "assessment_response_sections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section_slug": {
+                      "type": "string"
+                    },
+                    "assessment_response_items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "item_slug": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "number",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "item_slug",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "section_slug",
+                    "assessment_response_items"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "comment": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "assessment_response_id",
+              "respondent_user_email",
+              "participant_group_id",
+              "participant_id",
+              "assessment_slug",
+              "assessment_version",
+              "date",
+              "assessment_response_events",
+              "assessment_response_sections",
+              "comment"
+            ],
+            "additionalProperties": false
+          },
+          "AssessmentResponseAnonymized": {
+            "type": "object",
+            "properties": {
+              "assessment_response_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "is_respondent_self": {
+                "type": "boolean"
+              },
+              "respondent_hash": {
+                "type": "string"
+              },
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "assessment_slug": {
+                "type": "string"
+              },
+              "assessment_version": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "comment": {
+                "type": "string"
+              },
+              "assessment_response_events": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_events/items"
+                }
+              },
+              "assessment_response_sections": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_sections/items"
+                }
+              }
+            },
+            "required": [
+              "assessment_response_id",
+              "is_respondent_self",
+              "respondent_hash",
+              "participant_group_id",
+              "participant_id",
+              "assessment_slug",
+              "assessment_version",
+              "date",
+              "comment",
+              "assessment_response_events",
+              "assessment_response_sections"
+            ],
+            "additionalProperties": false
+          },
+          "AssessmentResponseCreate": {
+            "type": "object",
+            "properties": {
+              "assessment_slug": {
+                "type": "string"
+              },
+              "assessment_version": {
+                "type": "string"
+              },
+              "comment": {
+                "type": "string"
+              },
+              "assessment_response_sections": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_sections/items"
+                }
+              },
+              "assessment_response_events": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_events/items"
+                }
+              }
+            },
+            "required": [
+              "assessment_slug",
+              "assessment_version",
+              "comment",
+              "assessment_response_sections",
+              "assessment_response_events"
+            ],
+            "additionalProperties": false
+          },
+          "AssessmentResponseEvent": {
+            "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_events/items"
+          },
+          "AssessmentResponseId": {
+            "type": "object",
+            "properties": {
+              "assessment_response_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "assessment_response_id",
+              "participant_group_id",
+              "participant_id"
+            ],
+            "additionalProperties": false
+          },
+          "AssessmentResponseItem": {
+            "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_sections/items/properties/assessment_response_items/items"
+          },
+          "AssessmentResponseItemValue": {
+            "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_sections/items/properties/assessment_response_items/items/properties/value"
+          },
+          "AssessmentResponseList": {
+            "type": "object",
+            "properties": {
+              "assessment_response_list": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse"
+                }
+              }
+            },
+            "required": [
+              "assessment_response_list"
+            ],
+            "additionalProperties": false
+          },
+          "AssessmentResponseListAnonymized": {
+            "type": "object",
+            "properties": {
+              "assessment_response_list_anonymized": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponseAnonymized"
+                }
+              }
+            },
+            "required": [
+              "assessment_response_list_anonymized"
+            ],
+            "additionalProperties": false
+          },
+          "AssessmentResponseSection": {
+            "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_sections/items"
+          },
+          "AssessmentResponseUpdate": {
+            "type": "object",
+            "properties": {
+              "comment": {
+                "type": "string"
+              },
+              "assessment_response_sections": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_sections/items"
+                }
+              },
+              "assessment_response_events": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse/properties/assessment_response_events/items"
+                }
+              }
+            },
+            "required": [
+              "comment",
+              "assessment_response_sections",
+              "assessment_response_events"
+            ],
+            "additionalProperties": false
+          },
+          "AuthCredentialsPassword": {
+            "type": "object",
+            "properties": {
+              "user_email": {
+                "$ref": "#/components/schemas/T/properties/Email"
+              },
+              "password": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "user_email",
+              "password"
+            ],
+            "additionalProperties": false
+          },
+          "AuthCredentialsToken": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "token"
+            ],
+            "additionalProperties": false
+          },
+          "AuthResponse": {
+            "type": "object",
+            "properties": {
+              "user_email": {
+                "type": "string",
+                "format": "email"
+              },
+              "token": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "user_email",
+              "token",
+              "expires_at"
+            ],
+            "additionalProperties": false
+          },
+          "AuthToken": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "token"
+            ],
+            "additionalProperties": false
+          },
+          "ServerInfo": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean",
+                "enum": [
+                  true
+                ]
+              },
+              "up_since": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "ok",
+              "up_since"
+            ],
+            "additionalProperties": false
+          },
+          "Participant": {
+            "type": "object",
+            "properties": {
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "display_label": {
+                "type": "string",
+                "minLength": 4
+              },
+              "birth_year": {
+                "type": "integer"
+              },
+              "sex": {
+                "type": "string",
+                "enum": [
+                  "Male",
+                  "Female",
+                  "Other"
+                ]
+              }
+            },
+            "required": [
+              "participant_group_id",
+              "participant_id",
+              "display_label",
+              "birth_year",
+              "sex"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroup": {
+            "type": "object",
+            "properties": {
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "display_label": {
+                "type": "string",
+                "minLength": 4
+              },
+              "participants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "participant_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "display_label": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "participant_id",
+                    "display_label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "participant_group_user_group_roles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "user_email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "group_role": {
+                      "type": "string",
+                      "enum": [
+                        "GroupAdmin",
+                        "GroupAnalyst",
+                        "GroupOwner",
+                        "GroupRespondent",
+                        "GroupReviewer"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "user_email",
+                    "group_role"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "participant_group_user_participant_roles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "user_email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "participant_role": {
+                      "type": "string",
+                      "enum": [
+                        "ParticipantRespondent",
+                        "ParticipantReviewer"
+                      ]
+                    },
+                    "participant_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "user_email",
+                    "participant_role",
+                    "participant_id"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "participant_group_user_participant_relationships": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "user_email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "participant_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "user_participant_relationship": {
+                      "type": "string",
+                      "enum": [
+                        "Teacher",
+                        "ParentCaregiver",
+                        "OtherSchoolPersonnel",
+                        "Clinician",
+                        "Other"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "user_email",
+                    "participant_id",
+                    "user_participant_relationship"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "participant_group_id",
+              "display_label",
+              "participants",
+              "participant_group_user_group_roles",
+              "participant_group_user_participant_roles",
+              "participant_group_user_participant_relationships"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroupCreate": {
+            "type": "object",
+            "properties": {
+              "display_label": {
+                "type": "string",
+                "minLength": 4
+              },
+              "owner_user_email": {
+                "$ref": "#/components/schemas/T/properties/Email"
+              }
+            },
+            "required": [
+              "display_label",
+              "owner_user_email"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroupUpdate": {
+            "type": "object",
+            "properties": {
+              "display_label": {
+                "type": "string",
+                "minLength": 4
+              }
+            },
+            "required": [
+              "display_label"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroupUserGroupRole": {
+            "type": "object",
+            "properties": {
+              "group_role": {
+                "type": "string",
+                "enum": [
+                  "GroupAdmin",
+                  "GroupAnalyst",
+                  "GroupOwner",
+                  "GroupRespondent",
+                  "GroupReviewer"
+                ]
+              },
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "user_email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "group_role",
+              "participant_group_id",
+              "user_email"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroupUserParticipantRelationship": {
+            "type": "object",
+            "properties": {
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "user_participant_relationship": {
+                "type": "string",
+                "enum": [
+                  "Teacher",
+                  "ParentCaregiver",
+                  "OtherSchoolPersonnel",
+                  "Clinician",
+                  "Other"
+                ]
+              },
+              "user_email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "participant_group_id",
+              "participant_id",
+              "user_participant_relationship",
+              "user_email"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantGroupUserParticipantRole": {
+            "type": "object",
+            "properties": {
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_role": {
+                "type": "string",
+                "enum": [
+                  "ParticipantRespondent",
+                  "ParticipantReviewer"
+                ]
+              },
+              "user_email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": [
+              "participant_group_id",
+              "participant_id",
+              "participant_role",
+              "user_email"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantSummary": {
+            "type": "object",
+            "properties": {
+              "participant_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "participant_group_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "birth_year": {
+                "type": "integer"
+              },
+              "sex": {
+                "type": "string",
+                "enum": [
+                  "Male",
+                  "Female",
+                  "Other"
+                ]
+              },
+              "assessments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "assessment_slug": {
+                      "type": "string"
+                    },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "section_slug": {
+                            "type": "string"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "item_slug": {
+                                  "type": "string"
+                                },
+                                "num": {
+                                  "type": "number"
+                                },
+                                "min": {
+                                  "type": "number"
+                                },
+                                "max": {
+                                  "type": "number"
+                                },
+                                "mean": {
+                                  "type": "number"
+                                },
+                                "median": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "item_slug",
+                                "num",
+                                "min",
+                                "max",
+                                "mean",
+                                "median"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "section_slug",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "assessment_slug",
+                    "sections"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "participant_id",
+              "participant_group_id",
+              "birth_year",
+              "sex",
+              "assessments"
+            ],
+            "additionalProperties": false
+          },
+          "ParticipantUpsert": {
+            "type": "object",
+            "properties": {
+              "display_label": {
+                "type": "string",
+                "minLength": 4
+              },
+              "birth_year": {
+                "type": "integer"
+              },
+              "sex": {
+                "$ref": "#/components/schemas/T/properties/Participant/properties/sex"
+              }
+            },
+            "required": [
+              "display_label",
+              "birth_year",
+              "sex"
+            ],
+            "additionalProperties": false
+          },
+          "User": {
+            "type": "object",
+            "properties": {
+              "user_email": {
+                "type": "string",
+                "format": "email"
+              },
+              "is_active": {
+                "type": "boolean"
+              },
+              "is_super_admin": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "user_email",
+              "is_active",
+              "is_super_admin"
+            ],
+            "additionalProperties": false
+          },
+          "UserCreate": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "minLength": 8
+              }
+            },
+            "required": [
+              "password"
+            ],
+            "additionalProperties": false
+          },
+          "UserList": {
+            "type": "object",
+            "properties": {
+              "user_list": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/T/properties/User"
+                }
+              }
+            },
+            "required": [
+              "user_list"
+            ],
+            "additionalProperties": false
+          },
+          "UserPasswordReset": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "minLength": 8
+              }
+            },
+            "required": [
+              "password"
+            ],
+            "additionalProperties": false
+          },
+          "UserParticipantGroupRoleList": {
+            "type": "object",
+            "properties": {
+              "participant_group_user_group_roles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "group_role": {
+                      "type": "string",
+                      "enum": [
+                        "GroupAdmin",
+                        "GroupAnalyst",
+                        "GroupOwner",
+                        "GroupRespondent",
+                        "GroupReviewer"
+                      ]
+                    },
+                    "participant_group": {
+                      "type": "object",
+                      "properties": {
+                        "participant_group_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "display_label": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "participant_group_id",
+                        "display_label"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "group_role",
+                    "participant_group"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "participant_group_user_participant_roles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "participant_role": {
+                      "type": "string",
+                      "enum": [
+                        "ParticipantRespondent",
+                        "ParticipantReviewer"
+                      ]
+                    },
+                    "participant": {
+                      "type": "object",
+                      "properties": {
+                        "participant_group_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "participant_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "display_label": {
+                          "type": "string"
+                        },
+                        "birth_year": {
+                          "type": "integer"
+                        },
+                        "sex": {
+                          "type": "string",
+                          "enum": [
+                            "Male",
+                            "Female",
+                            "Other"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "participant_group_id",
+                        "participant_id",
+                        "display_label",
+                        "birth_year",
+                        "sex"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "participant_role",
+                    "participant"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "participant_group_user_group_roles",
+              "participant_group_user_participant_roles"
+            ],
+            "additionalProperties": false
+          },
+          "UserUpdate": {
+            "type": "object",
+            "properties": {
+              "is_active": {
+                "type": "boolean"
+              },
+              "is_super_admin": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "is_active",
+              "is_super_admin"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "JsonRecord",
+          "Email",
+          "Uuid",
+          "UserEmail",
+          "GroupRole",
+          "ParticipantRole",
+          "ParticipantId",
+          "ParticipantGroupId",
+          "UserParticipantRelationship",
+          "Ack",
+          "ApiError",
+          "ApiErrorKind",
+          "AssessmentResponse",
+          "AssessmentResponseAnonymized",
+          "AssessmentResponseCreate",
+          "AssessmentResponseEvent",
+          "AssessmentResponseId",
+          "AssessmentResponseItem",
+          "AssessmentResponseItemValue",
+          "AssessmentResponseList",
+          "AssessmentResponseListAnonymized",
+          "AssessmentResponseSection",
+          "AssessmentResponseUpdate",
+          "AuthCredentialsPassword",
+          "AuthCredentialsToken",
+          "AuthResponse",
+          "AuthToken",
+          "ServerInfo",
+          "Participant",
+          "ParticipantGroup",
+          "ParticipantGroupCreate",
+          "ParticipantGroupUpdate",
+          "ParticipantGroupUserGroupRole",
+          "ParticipantGroupUserParticipantRelationship",
+          "ParticipantGroupUserParticipantRole",
+          "ParticipantSummary",
+          "ParticipantUpsert",
+          "User",
+          "UserCreate",
+          "UserList",
+          "UserPasswordReset",
+          "UserParticipantGroupRoleList",
+          "UserUpdate"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "paths": {
+    "/openapi-transformed/json": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/openapi-transformed/yaml": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/auth/token": {
+      "delete": {
+        "operationId": "deleteToken",
+        "description": "Delete an existing token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/AuthToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/self": {
+      "get": {
+        "operationId": "getSelf",
+        "description": "Verify token and get self",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/token/password": {
+      "post": {
+        "operationId": "postTokenPassword",
+        "description": "Exchange password credentials for an access token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/AuthCredentialsPassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/token/token": {
+      "post": {
+        "operationId": "postTokenToken",
+        "description": "Renew an access token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/AuthCredentialsToken"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server/info": {
+      "get": {
+        "operationId": "getServerInfo",
+        "description": "Get server status acknowledgement",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ServerInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/participant/{participant_id}/assessment-response/{assessment_response_id}": {
+      "delete": {
+        "operationId": "delAssessmentResponse",
+        "description": "Delete an existing assessment response",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_response_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putAssessmentResponseUpdate",
+        "description": "Update an existing assessment response",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/AssessmentResponseUpdate"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_response_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/assessment-response/{participant_id}": {
+      "get": {
+        "operationId": "getAssessmentResponseList",
+        "description": "Get list of assessment responses of a participant",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponseList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "postAssessmentResponseCreate",
+        "description": "Create an assessment response",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/AssessmentResponseCreate"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/assessment-response/{participant_id}/anonymized": {
+      "get": {
+        "operationId": "getAssessmentResponseListAnonymized",
+        "description": "Get list of anonymized assessment responses of a participant",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponseListAnonymized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/participant/{participant_id}": {
+      "delete": {
+        "operationId": "delParticipantGroupParticipant",
+        "description": "Delete an existing participant group participant",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putParticipantGroupParticipantUpdate",
+        "description": "Update an existing participant group participant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/ParticipantUpsert"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Participant"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/participant/{participant_id}/summary": {
+      "get": {
+        "operationId": "getParticipantSummary",
+        "description": "Get summary of a participant",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/participant": {
+      "post": {
+        "operationId": "postParticipantGroupParticipantCreate",
+        "description": "Create a participant group participant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/ParticipantUpsert"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Participant"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/user/{user_email}/group-role/{group_role}": {
+      "delete": {
+        "operationId": "delParticipantGroupUserGroupRole",
+        "description": "Delete an existing participant group user role",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "group_role",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GroupAdmin",
+                "GroupAnalyst",
+                "GroupOwner",
+                "GroupRespondent",
+                "GroupReviewer"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putParticipantGroupUserGroupRole",
+        "description": "Create a new or update an existing participant group user group role",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "group_role",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GroupAdmin",
+                "GroupAnalyst",
+                "GroupOwner",
+                "GroupRespondent",
+                "GroupReviewer"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantGroupUserGroupRole"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/user/{user_email}/participant-relationship/{participant_id}/{user_participant_relationship}": {
+      "delete": {
+        "operationId": "delParticipantGroupUserParticipantRelationship",
+        "description": "Delete an existing participant group user participant relationship",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_participant_relationship",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Teacher",
+                "ParentCaregiver",
+                "OtherSchoolPersonnel",
+                "Clinician",
+                "Other"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putParticipantGroupUserParticipantRelationship",
+        "description": "Delete an existing participant group user participant relationship",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_participant_relationship",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Teacher",
+                "ParentCaregiver",
+                "OtherSchoolPersonnel",
+                "Clinician",
+                "Other"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantGroupUserParticipantRelationship"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/user/{user_email}/participant-role/{participant_id}/{participant_role}": {
+      "delete": {
+        "operationId": "delParticipantGroupUserParticipantRole",
+        "description": "Delete an existing participant group user participant role",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_role",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ParticipantRespondent",
+                "ParticipantReviewer"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putParticipantGroupUserParticipantRole",
+        "description": "Create a new or update an existing participant group user participant role",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_role",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ParticipantRespondent",
+                "ParticipantReviewer"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantGroupUserParticipantRole"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}": {
+      "get": {
+        "operationId": "getParticipantGroup",
+        "description": "Get a participant group",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantGroup"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putParticipantGroupUpdate",
+        "description": "Update an existing participant group",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/ParticipantGroupUpdate"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantGroup"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group/{participant_group_id}/assessment-response/anonymized": {
+      "get": {
+        "operationId": "getParticipantGroupAssessmentResponseListAnonymized",
+        "description": "Get list of anonymized assessment responses of a participant group",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "participant_group_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "participant_id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/AssessmentResponseListAnonymized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/participant-group": {
+      "post": {
+        "operationId": "postParticipantGroupCreate",
+        "description": "Create a new participant group",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/ParticipantGroupCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/ParticipantGroup"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "getUserList",
+        "description": "Get list of users",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/UserList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_email}/participant-group-role": {
+      "get": {
+        "operationId": "getUserParticipantGroupRoleList",
+        "description": "List participant group roles of user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/T/properties/Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/UserParticipantGroupRoleList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_email}": {
+      "post": {
+        "operationId": "postUserCreate",
+        "description": "Create a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/UserCreate"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/T/properties/Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putUserUpdate",
+        "description": "Update an existing user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/UserUpdate"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/T/properties/Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_email}/password-reset": {
+      "post": {
+        "operationId": "postUserPasswordReset",
+        "description": "Reset a users' password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/T/properties/UserPasswordReset"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_email",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/T/properties/Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/T/properties/Ack"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

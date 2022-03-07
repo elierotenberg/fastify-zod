@@ -1,3 +1,8 @@
+openapi: 3.0.3
+info:
+  title: Fastify Zod Test Server
+  description: Test Server for Fastify Zod
+  version: 0.0.0
 components:
   schemas:
     Schema_TodoItem:
@@ -93,6 +98,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Schema_TodoItems'
+                description: The list of Todo Items
     post:
       operationId: postTodoItem
       requestBody:
@@ -149,8 +155,3 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Schema_FortyTwo'
-openapi: 3.0.3
-info:
-  title: Fastify Zod Test Server
-  description: Test Server for Fastify Zod
-  version: 0.0.0

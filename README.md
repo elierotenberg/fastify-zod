@@ -403,7 +403,7 @@ Output:
 }
 ```
 
-- `mergeSchemas` transform
+- `mergeRefs` transform
 
 Finds deeply nested structures equivalent to existing schemas and replace them with `$ref`s to this schema. In practice this means deduplication and more importantly, referential equivalence in addition to structrural equivalence. This is especially useful for `enum`s since in TypeScript to equivalent enums are not assignable to each other.
 
@@ -428,6 +428,11 @@ Example input:
       }
     }
   }
+}
+{
+  "mergeRefs": [{
+    "$ref": "TodoItemState#"
+  }]
 }
 ```
 
@@ -454,10 +459,12 @@ Output:
 }
 ```
 
-Output:
+In the typical case, you will not create each ref explicitly, but rather use the `$ref` function provided by `buildJsonSchemas`:
 
-```json
-
+```ts
+{
+  mergeRefs: [$ref("TodoItemState")];
+}
 ```
 
 - `deleteUnusedSchemas` transform
@@ -533,16 +540,14 @@ Default options:
 
 ```ts
 {
-  rewriteAbsoluteRefs: "recursive",
-  extractSchemasProperties: "recursive",
-  mergeSchemas: "recursive",
-  deleteUnusedSchemas: true,
+  rewriteAbsoluteRefs?: boolean = true,
+  extractSchemasProperties?: boolean = true,
+  mergeRefs?: { $ref: string }[] = [],
+  deleteUnusedSchemas?: boolean = true,
 }
 ```
 
-For `rewriteAbsoluteRefs`, `extractSchemasProperties` and `mergeSchemas` transforms, values can be `false` (don't transform), `true` or `undefined` (defaults to `recursive`), `shallow` (single pass transform) or `recursive` (repeat transforms recursively).
-
-For `deleteUnusedSchema`, values can be `false` (don't transform) or `true` or `undefined` (transform).
+All transforms default to `true` except `mergeRefs` that you must explicitly configure.
 
 #### SpecTransformer#getSpec(): Spec
 
@@ -557,8 +562,10 @@ Recommended use is with `register` and `fastify.inject`.
 For this you need to first generate the spec file, then run `openapitools-generator`:
 
 ```ts
+const jsonSchemas = buildJsonSchemas(models);
+
 register(f, {
-  jsonSchemas: buildJsonSchemas(models),
+  jsonSchemas,
   swaggerOptions: {
     openapi: {
       /* ... */
@@ -566,6 +573,9 @@ register(f, {
     exposeRoute: true,
     transformSpec: {
       routePrefix: "/openapi_transformed",
+      options: {
+        mergeRefs: [$ref("TodoItemState")],
+      },
     },
   },
 });

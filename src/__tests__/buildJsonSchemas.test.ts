@@ -473,14 +473,14 @@ describe(`buildJsonSchemas`, () => {
                 properties: {
                   id: { type: `number` },
                   label: { type: `string` },
-                  state: { $ref: `#/properties/TodoItemState` },
+                  state: { $ref: `Schema#/properties/TodoItemState` },
                 },
                 required: [`id`, `label`, `state`],
                 additionalProperties: false,
               },
               TodoList: {
                 type: `array`,
-                items: { $ref: `#/properties/TodoItem` },
+                items: { $ref: `Schema#/properties/TodoItem` },
               },
             },
             required: [`TodoItemState`, `TodoItem`, `TodoList`],

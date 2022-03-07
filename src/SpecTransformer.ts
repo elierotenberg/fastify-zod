@@ -1,4 +1,5 @@
-import { z } from "zod";
+import { inspect } from "util";
+
 import deepEqual from "fast-deep-equal";
 
 import {
@@ -11,18 +12,18 @@ import {
   replacePathPrefix,
   setAtPath,
 } from "./Path";
-import { isZod, mapDeep, visitDeep } from "./util";
+import { findFirstDeep, isRecord, visitDeep } from "./util";
 
-const $refPattern = /^[^#]*#(\/[^\/]+)*$/;
+type Ref = {
+  $ref: string;
+};
 
-const $Ref = z.string().regex($refPattern);
-type $Ref = z.infer<typeof $Ref>;
-
-const Ref = z.object({
-  $ref: $Ref,
-});
-type Ref = z.infer<typeof Ref>;
-const isRef = isZod(Ref);
+const isRef = (ref: unknown): ref is Ref => {
+  if (!isRecord(ref)) {
+    return false;
+  }
+  return typeof ref.$ref === `string`;
+};
 
 type RefPath = {
   readonly basePath: string;
@@ -44,283 +45,567 @@ const toRef = (refPath: RefPath): Ref => ({
   $ref: [`${refPath.basePath}#`, ...refPath.path].join(`/`),
 });
 
-const SpecSchema = z
-  .object({
-    properties: z.record(z.unknown()).optional(),
-    required: z.array(z.string()).optional(),
-  })
-  .passthrough();
-type SpecSchema = z.infer<typeof SpecSchema>;
-
-const SpecSchemas = z.record(SpecSchema);
-type SpecSchemas = z.infer<typeof SpecSchemas>;
-
-const SpecPaths = z.record(z.unknown());
-
-const OpenApiSpec = z
-  .object({
-    components: z
-      .object({
-        schemas: SpecSchemas,
-      })
-      .passthrough(),
-    paths: SpecPaths,
-  })
-  .passthrough();
-
-const isOpenApiSpec = isZod(OpenApiSpec);
-
-const SwaggerSpec = z
-  .object({
-    definitions: SpecSchemas,
-    paths: SpecPaths,
-  })
-  .passthrough();
-
-export const Spec = z.union([OpenApiSpec, SwaggerSpec]);
-type Spec = z.infer<typeof Spec>;
-
-type Transform = () => number;
-
-type TransformStrategy = boolean | `shallow` | `recursive`;
-
-const transform = (fn: Transform, depth: TransformStrategy): number => {
-  if (!depth) {
-    return 0;
-  }
-  if (depth === true || depth === `shallow`) {
-    return fn();
-  }
-  let totalCount = 0;
-  while (true) {
-    const count = fn();
-    if (count === 0) {
-      return totalCount;
-    }
-    totalCount += count;
-  }
+type SpecSchema = {
+  readonly properties?: Record<string, unknown>;
+  readonly additionalProperties?: boolean | Record<string, unknown>;
+  readonly patternProperties?: Record<string, unknown>;
+  readonly items?: Record<string, unknown>;
 };
+
+const isSpecSchema = (input: unknown): input is SpecSchema => {
+  if (!isRecord(input)) {
+    return false;
+  }
+  const { properties, additionalProperties, patternProperties, items } = input;
+  if (typeof properties !== `undefined` && !isRecord(properties)) {
+    return false;
+  }
+
+  if (
+    typeof additionalProperties !== `undefined` &&
+    typeof additionalProperties !== `boolean` &&
+    !isRecord(additionalProperties)
+  ) {
+    return false;
+  }
+
+  if (
+    typeof patternProperties !== `undefined` &&
+    typeof patternProperties !== `boolean` &&
+    !isRecord(patternProperties)
+  ) {
+    return false;
+  }
+
+  if (typeof items !== `undefined` && !isRecord(items)) {
+    return false;
+  }
+
+  return true;
+};
+
+type SpecSchemas = Record<string, SpecSchema>;
+
+const isSpecSchemas = (input: unknown): input is SpecSchemas => {
+  if (!isRecord(input)) {
+    return false;
+  }
+  for (const value of Object.values(input)) {
+    if (!isSpecSchema(value)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+type OpenApiSpec = {
+  readonly components: {
+    readonly schemas: SpecSchemas;
+  };
+  readonly paths?: Record<string, unknown>;
+};
+
+const isOpenApiSpec = (input: unknown): input is OpenApiSpec => {
+  if (!isRecord(input)) {
+    return false;
+  }
+  const { components, paths } = input;
+  if (!isRecord(components)) {
+    return false;
+  }
+  const { schemas } = components;
+  if (!isSpecSchemas(schemas)) {
+    return false;
+  }
+  if (typeof paths !== `undefined` && !isRecord(paths)) {
+    return false;
+  }
+  return true;
+};
+
+type SwaggerSpec = {
+  readonly definitions: SpecSchemas;
+  readonly paths?: Record<string, unknown>;
+};
+
+const isSwaggerSpec = (input: unknown): input is SwaggerSpec => {
+  if (!isRecord(input)) {
+    return false;
+  }
+  const { definitions, paths } = input;
+  if (!isSpecSchemas(definitions)) {
+    return false;
+  }
+  if (typeof paths !== `undefined` && !isRecord(paths)) {
+    return false;
+  }
+  return true;
+};
+
+export type Spec = OpenApiSpec | SwaggerSpec;
+
+const isSpec = (input: unknown): input is Spec =>
+  isOpenApiSpec(input) || isSwaggerSpec(input);
 
 const deepClone = (spec: Spec): Spec => JSON.parse(JSON.stringify(spec));
 
+type ExtractSchemaPropertiesKey =
+  | `properties`
+  | `additionalProperties`
+  | `patternProperties`
+  | `items`;
+
+const defaultExtractSchemaPropertiesKey: ExtractSchemaPropertiesKey[] = [
+  `properties`,
+  `additionalProperties`,
+  `patternProperties`,
+  `items`,
+];
+
+type Timings = {
+  readonly begin: number;
+  readonly end: number;
+  readonly delta: number;
+};
+
+const withTimings = <T>(fn: () => T): [result: T, timings: Timings] => {
+  const begin = performance.now();
+  const result = fn();
+  const end = performance.now();
+
+  return [
+    result,
+    {
+      begin,
+      end,
+      delta: end - begin,
+    },
+  ];
+};
+
+type TransformWithTimingsResult = {
+  readonly spec: Spec;
+  readonly timings: {
+    readonly rewriteSchemasAbsoluteRefs: Timings;
+    readonly extractSchemasProperties: Timings;
+    readonly mergeRefs: Timings;
+    readonly deleteUnusedSchemas: Timings;
+    readonly total: Timings;
+  };
+};
+
 export type TransformOptions = {
   readonly rewriteSchemasAbsoluteRefs?: boolean;
-  readonly extractSchemasProperties?: TransformStrategy;
-  readonly mergeSchemas?: TransformStrategy;
+  readonly extractSchemasProperties?: boolean | ExtractSchemaPropertiesKey[];
+  readonly mergeRefs?: Ref[];
   readonly deleteUnusedSchemas?: boolean;
 };
 
 export class SpecTransformer {
+  private readonly DEBUG: boolean;
   private readonly spec: Spec;
 
-  public constructor(spec: Spec) {
+  private readonly schemasPath: string[];
+
+  public constructor(spec: unknown, DEBUG = false) {
+    if (!isSpec(spec)) {
+      throw new Error(`spec is not an OpenApiSpec or a SwaggerSpec`);
+    }
     this.spec = deepClone(spec);
+    this.schemasPath = isOpenApiSpec(spec)
+      ? [`components`, `schemas`]
+      : [`definitions`];
+    this.DEBUG = DEBUG;
   }
 
-  private readonly getSchemas = (): SpecSchemas => {
-    return isOpenApiSpec(this.spec)
-      ? this.spec.components.schemas
-      : this.spec.definitions;
+  private readonly _DEBUG = (...args: unknown[]): void => {
+    if (this.DEBUG) {
+      console.debug(...args);
+    }
   };
 
-  private readonly getSchemaKeys = (): string[] =>
-    Object.keys(this.getSchemas());
+  private readonly throw = (error: unknown): never => {
+    if (this.DEBUG) {
+      console.debug(inspect(this.spec, { depth: null }));
+      console.error(error);
+    }
+    throw error;
+  };
+
+  private readonly getSchemaPath = (schemaKey: string): string[] =>
+    getChildPath(getChildPath(this.schemasPath, schemaKey));
 
   private readonly getSchema = (schemaKey: string): SpecSchema => {
-    const schema = this.getSchemas()[schemaKey];
-    if (!schema) {
-      throw new Error(`schema(schemaKey='${schemaKey}') not found`);
+    const schema = this.getAtPath(this.getSchemaPath(schemaKey));
+    if (!isSpecSchema(schema)) {
+      return this.throw(new Error(`schema is not a SpecSchema`));
     }
     return schema;
   };
 
-  private readonly getSchemaPath = (schemaKey: string): string[] =>
-    isOpenApiSpec(this.spec)
-      ? [`components`, `schemas`, schemaKey]
-      : [`definitions`, schemaKey];
+  private readonly getSchemaKeys = (): string[] => {
+    const schemas = this.getAtPath(this.schemasPath);
+    if (!isRecord(schemas)) {
+      return this.throw(new Error(`schemas is not a Record`));
+    }
+    return Object.keys(schemas);
+  };
 
-  private readonly countSchemaProperRefs = (schemaKey: string): number => {
+  private readonly getAtPath = (path: string[]): unknown =>
+    getAtPath(this.spec, path);
+
+  private readonly getAtPathSafe = (
+    path: string[],
+  ): [valueFound: boolean, value: unknown] => getAtPathSafe(this.spec, path);
+
+  private readonly resolveRef = (
+    $ref: string,
+  ): [value: unknown, $ref: string] => {
+    const refPath = toRefPath($ref);
+    if (refPath.basePath.length > 0) {
+      const nextRef = toRef({
+        basePath: ``,
+        path: getChildPath(
+          this.getSchemaPath(refPath.basePath),
+          ...refPath.path,
+        ),
+      });
+      return this.resolveRef(nextRef.$ref);
+    }
+    const value = this.getAtPath(refPath.path);
+    if (isRef(value)) {
+      return this.resolveRef(value.$ref);
+    }
+    return [value, $ref];
+  };
+
+  private readonly setAtPath = (path: string[], value: unknown): void => {
+    this._DEBUG(`setAtPath`, { path, value });
+    return setAtPath(this.spec, path, value);
+  };
+
+  private readonly deleteAtPath = (path: string[]): void => {
+    this._DEBUG(`deleteAtPath`, { path });
+    return deleteAtPath(this.spec, path);
+  };
+
+  private readonly findFirstDeep = (
+    predicate: (value: unknown, path: string[]) => boolean,
+  ): [found: boolean, value: unknown, path: string[]] =>
+    findFirstDeep(this.spec, predicate);
+
+  private readonly hasProperRef = (schemaKey: string): boolean => {
     const schemaPath = this.getSchemaPath(schemaKey);
-    let count = 0;
-    visitDeep(this.spec, (value, path) => {
+    const [hasProperRef] = this.findFirstDeep((value, path) => {
       if (equalPath(path, schemaPath)) {
         return false;
       }
       if (isRef(value)) {
         const refPath = toRefPath(value.$ref);
-        if (
+        return (
           refPath.basePath.length === 0 &&
           matchPathPrefix(schemaPath, refPath.path)
-        ) {
-          count++;
+        );
+      }
+      return false;
+    });
+    return hasProperRef;
+  };
+
+  private readonly deleteUnusedSchemas = (): void => {
+    this._DEBUG(`deleteUnusedSchemas`);
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      for (const schemaKey of this.getSchemaKeys()) {
+        if (!this.hasProperRef(schemaKey)) {
+          this.deleteAtPath(this.getSchemaPath(schemaKey));
+          dirty = true;
+          break;
         }
       }
-      return true;
-    });
-
-    return count;
-  };
-
-  private readonly deleteUnusedSchemas = (): number => {
-    for (const schemaKey of this.getSchemaKeys()) {
-      if (this.countSchemaProperRefs(schemaKey) === 0) {
-        deleteAtPath(this.spec, this.getSchemaPath(schemaKey));
-        return 1 + this.deleteUnusedSchemas();
-      }
     }
-    return 0;
   };
 
-  private readonly rewriteSchemaAbsoluteRefs = (schemaKey: string): number => {
+  private readonly rewriteSchemaAbsoluteRefs = (schemaKey: string): boolean => {
     const schema = this.getSchema(schemaKey);
     const schemaPath = this.getSchemaPath(schemaKey);
-    let count = 0;
-    mapDeep(schema, (prevValue) => {
-      if (isRef(prevValue)) {
-        const refPath = toRefPath(prevValue.$ref);
+    let dirty = false;
+    visitDeep(schema, (value) => {
+      if (isRef(value)) {
+        const refPath = toRefPath(value.$ref);
         if (
           refPath.basePath.length === 0 &&
           !matchPathPrefix(schemaPath, refPath.path)
         ) {
           const nextPath = getChildPath(schemaPath, ...refPath.path);
-          count++;
-          return toRef({
-            basePath: ``,
-            path: nextPath,
-          });
+          value.$ref = toRef({ basePath: ``, path: nextPath }).$ref;
+          dirty = true;
         }
       }
-      return prevValue;
     });
-    return count;
+    return dirty;
   };
-  private readonly rewriteSchemasAbsoluteRefs = (): number => {
-    let count = 0;
-    for (const schemaKey of this.getSchemaKeys()) {
-      count += this.rewriteSchemaAbsoluteRefs(schemaKey);
+
+  private readonly rewriteSchemasAbsoluteRefs = (): void => {
+    this._DEBUG(`rewriteSchemasAbsoluteRefs`);
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      for (const schemaKey of this.getSchemaKeys()) {
+        if (this.rewriteSchemaAbsoluteRefs(schemaKey)) {
+          dirty = true;
+          break;
+        }
+      }
     }
-    return count;
   };
 
   private readonly extractSchemaPathAsSchema = (
     prevSchemaKey: string,
     prevRelativePath: string[],
     nextSchemaKey: string,
-  ): number => {
+  ): boolean => {
     const prevPath = getChildPath(
       this.getSchemaPath(prevSchemaKey),
       ...prevRelativePath,
     );
 
-    const value = getAtPath(this.spec, prevPath);
+    const prevValue = this.getAtPath(prevPath);
     const nextPath = this.getSchemaPath(nextSchemaKey);
 
-    const [prevValueFound, prevValue] = getAtPathSafe(this.spec, nextPath);
+    const [hasValueAtNextPath, valueAtNextPath] = this.getAtPathSafe(nextPath);
 
-    if (prevValueFound) {
-      if (!deepEqual(value, prevValue)) {
-        throw new Error(
-          `schema(schemaKey='${nextSchemaKey}') already exists with a different value`,
+    if (hasValueAtNextPath) {
+      if (!deepEqual(prevValue, valueAtNextPath)) {
+        this.throw(
+          new Error(
+            `schema(schemaKey='${nextSchemaKey}') already exists with a different value`,
+          ),
         );
       }
     } else {
-      setAtPath(this.spec, nextPath, value);
+      this.setAtPath(nextPath, prevValue);
     }
 
-    setAtPath(this.spec, prevPath, toRef({ basePath: ``, path: nextPath }));
+    this.setAtPath(prevPath, toRef({ basePath: ``, path: nextPath }));
 
-    let count = 0;
-    mapDeep(this.spec, (value) => {
+    let dirty = false;
+    visitDeep(this.spec, (value) => {
       if (isRef(value)) {
         const refPath = toRefPath(value.$ref);
         if (
           refPath.basePath.length === 0 &&
           matchPathPrefix(prevPath, refPath.path)
         ) {
-          count++;
-          return toRef({
+          value.$ref = toRef({
             basePath: ``,
             path: replacePathPrefix(prevPath, nextPath, refPath.path),
-          });
+          }).$ref;
+          dirty = true;
         }
       }
-      return value;
     });
-    return count;
+    return dirty;
   };
 
-  private readonly extractSchemaProperties = (schemaKey: string): number => {
-    const schema = this.getSchema(schemaKey);
-    const properties = schema.properties;
-    let count = 0;
-    if (properties) {
-      for (const key of Object.keys(properties)) {
-        if (!isRef(properties[key])) {
-          count += this.extractSchemaPathAsSchema(
+  private readonly extractSchemaPropertiesAtKey = (
+    schemaKey: string,
+    propertiesKey: ExtractSchemaPropertiesKey,
+  ): boolean => {
+    let globalDirty = false;
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      if (
+        propertiesKey === `properties` ||
+        propertiesKey === `additionalProperties` ||
+        propertiesKey === `patternProperties`
+      ) {
+        const properties = this.getSchema(schemaKey)[propertiesKey];
+        if (isRecord(properties)) {
+          for (const k of Object.keys(properties)) {
+            const property = properties[k];
+            if (!isRef(property)) {
+              this.extractSchemaPathAsSchema(
+                schemaKey,
+                [`properties`, k],
+                `${schemaKey}_${k}`,
+              );
+              dirty = true;
+              break;
+            }
+          }
+        }
+      }
+      if (propertiesKey === `items`) {
+        const properties = this.getSchema(schemaKey)[propertiesKey];
+        if (isRecord(properties) && !isRef(properties)) {
+          this.extractSchemaPathAsSchema(
             schemaKey,
-            [`properties`, key],
-            `${schemaKey}_${key}`,
+            [`items`],
+            `${schemaKey}_item`,
           );
+          dirty = true;
+        }
+      }
+      if (dirty) {
+        globalDirty = true;
+      }
+    }
+    return globalDirty;
+  };
+
+  private readonly extractSchemaProperties = (
+    schemaKey: string,
+    propertiesKeys: ExtractSchemaPropertiesKey[],
+  ): boolean => {
+    let globalDirty = false;
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      for (const propertiesKey of propertiesKeys) {
+        if (this.extractSchemaPropertiesAtKey(schemaKey, propertiesKey)) {
+          dirty = true;
+        }
+      }
+      if (dirty) {
+        globalDirty = true;
+      }
+    }
+    for (const propertiesKey of propertiesKeys) {
+      if (this.extractSchemaPropertiesAtKey(schemaKey, propertiesKey)) {
+        this.extractSchemaProperties(schemaKey, propertiesKeys);
+        return true;
+      }
+    }
+    return globalDirty;
+  };
+
+  private readonly extractSchemasProperties = (
+    propertiesKeys: ExtractSchemaPropertiesKey[],
+  ): void => {
+    this._DEBUG(`extractSchemasProperties`);
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      for (const schemaKey of this.getSchemaKeys()) {
+        if (this.extractSchemaProperties(schemaKey, propertiesKeys)) {
+          dirty = true;
+          break;
         }
       }
     }
-    return count;
   };
 
-  private readonly extractSchemasProperties = (): number => {
-    let count = 0;
-    for (const schemaKey of this.getSchemaKeys()) {
-      count += this.extractSchemaProperties(schemaKey);
-    }
-    return count;
-  };
-
-  private readonly mergeSchema = (mergeSchemaKey: string): number => {
-    const mergeSchemaPath = this.getSchemaPath(mergeSchemaKey);
-    const mergeSchema = this.getSchema(mergeSchemaKey);
-    let count = 0;
-    for (const schemaKey of this.getSchemaKeys()) {
-      if (schemaKey !== mergeSchemaKey) {
-        mapDeep(this.getSchema(schemaKey), (value) => {
-          if (deepEqual(value, mergeSchema)) {
-            count++;
-            return toRef({
-              basePath: ``,
-              path: mergeSchemaPath,
-            });
-          }
-          return value;
-        });
+  private readonly mergeRef = (prev$ref: string): boolean => {
+    const [schema, next$ref] = this.resolveRef(prev$ref);
+    let globalDirty = false;
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      visitDeep(this.spec, (value, path) => {
+        if (value !== schema && deepEqual(value, schema)) {
+          this.setAtPath(path, {
+            $ref: next$ref,
+          });
+          dirty = true;
+        }
+      });
+      if (dirty) {
+        globalDirty = true;
       }
     }
-    return count;
+    return globalDirty;
   };
 
-  private readonly mergeSchemas = (): number => {
-    let count = 0;
-    for (const mergeSchemaKey of this.getSchemaKeys()) {
-      count += this.mergeSchema(mergeSchemaKey);
-    }
-    return count;
-  };
-
-  public readonly transform = (opts: TransformOptions = {}): void => {
-    transform(
-      () => this.rewriteSchemasAbsoluteRefs(),
-      opts.rewriteSchemasAbsoluteRefs ?? `recursive`,
-    );
-
-    transform(
-      () => this.extractSchemasProperties(),
-      opts.extractSchemasProperties ?? `recursive`,
-    );
-
-    transform(() => this.mergeSchemas(), opts.mergeSchemas ?? `recursive`);
-
-    if (opts.deleteUnusedSchemas !== false) {
-      this.deleteUnusedSchemas();
+  private readonly mergeRefs = ($refs: string[]): void => {
+    let dirty = true;
+    while (dirty) {
+      dirty = false;
+      for (const $ref of $refs) {
+        if (this.mergeRef($ref)) {
+          dirty = true;
+          break;
+        }
+      }
     }
   };
 
-  public readonly getSpec = (): Spec => this.spec;
+  public readonly transformWithTimings = (
+    opts: TransformOptions = {},
+  ): TransformWithTimingsResult => {
+    const [
+      {
+        rewriteSchemasAbsoluteRefs,
+        extractSchemasProperties,
+        mergeRefs,
+        deleteUnusedSchemas,
+      },
+      total,
+    ] = withTimings(() => {
+      const [, rewriteSchemasAbsoluteRefs] = withTimings(() => {
+        if (opts.rewriteSchemasAbsoluteRefs === false) {
+          return;
+        }
+        this.rewriteSchemasAbsoluteRefs();
+      });
+
+      const [, mergeRefs] = withTimings(() => {
+        if (opts.mergeRefs) {
+          this.mergeRefs(opts.mergeRefs.map((ref) => ref.$ref));
+        }
+      });
+
+      this._DEBUG({ mergeRefs });
+
+      this._DEBUG({ rewriteSchemasAbsoluteRefs });
+
+      const [, extractSchemasProperties] = withTimings(() => {
+        if (opts.extractSchemasProperties === false) {
+          return;
+        }
+        const extractSchemasPropertiesKeys = !Array.isArray(
+          opts.extractSchemasProperties,
+        )
+          ? defaultExtractSchemaPropertiesKey
+          : opts.extractSchemasProperties;
+        this.extractSchemasProperties(extractSchemasPropertiesKeys);
+      });
+
+      this._DEBUG({ extractSchemasProperties });
+
+      const [, deleteUnusedSchemas] = withTimings(() => {
+        if (opts.deleteUnusedSchemas === false) {
+          return;
+        }
+        this.deleteUnusedSchemas();
+      });
+
+      this._DEBUG({ deleteUnusedSchemas });
+
+      return {
+        rewriteSchemasAbsoluteRefs,
+        extractSchemasProperties,
+        mergeRefs,
+        deleteUnusedSchemas,
+      };
+    });
+
+    this._DEBUG({ total });
+
+    return {
+      spec: this.spec,
+      timings: {
+        rewriteSchemasAbsoluteRefs,
+        extractSchemasProperties,
+        mergeRefs,
+        deleteUnusedSchemas,
+        total,
+      },
+    };
+  };
+
+  public readonly transform = (opts: TransformOptions = {}): Spec =>
+    this.transformWithTimings(opts).spec;
 }

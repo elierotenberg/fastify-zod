@@ -1,4 +1,10 @@
 {
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fastify Zod Test Server",
+    "description": "Test Server for Fastify Zod",
+    "version": "0.0.0"
+  },
   "components": {
     "schemas": {
       "Schema_TodoItem": {
@@ -135,7 +141,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Schema_TodoItems"
+                  "$ref": "#/components/schemas/Schema_TodoItems",
+                  "description": "The list of Todo Items"
                 }
               }
             }
@@ -238,11 +245,5 @@
         }
       }
     }
-  },
-  "openapi": "3.0.3",
-  "info": {
-    "title": "Fastify Zod Test Server",
-    "description": "Test Server for Fastify Zod",
-    "version": "0.0.0"
   }
 }
