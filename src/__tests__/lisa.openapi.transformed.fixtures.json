@@ -7,19 +7,19 @@
   },
   "components": {
     "schemas": {
-      "T_JsonRecord": {
+      "JsonRecord": {
         "type": "object",
         "additionalProperties": {}
       },
-      "T_Email": {
+      "Email": {
         "type": "string",
         "format": "email"
       },
-      "T_Uuid": {
+      "Uuid": {
         "type": "string",
         "format": "uuid"
       },
-      "T_GroupRole": {
+      "GroupRole": {
         "type": "string",
         "enum": [
           "GroupAdmin",
@@ -29,14 +29,14 @@
           "GroupReviewer"
         ]
       },
-      "T_ParticipantRole": {
+      "ParticipantRole": {
         "type": "string",
         "enum": [
           "ParticipantRespondent",
           "ParticipantReviewer"
         ]
       },
-      "T_UserParticipantRelationship": {
+      "UserParticipantRelationship": {
         "type": "string",
         "enum": [
           "Teacher",
@@ -46,11 +46,11 @@
           "Other"
         ]
       },
-      "T_Ack": {
+      "Ack": {
         "type": "object",
         "properties": {
           "ok": {
-            "$ref": "#/components/schemas/T_Ack_ok"
+            "$ref": "#/components/schemas/AckOk"
           }
         },
         "required": [
@@ -58,38 +58,38 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponse": {
+      "AssessmentResponse": {
         "type": "object",
         "properties": {
           "assessment_response_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "respondent_user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "assessment_slug": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_slug"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentSlug"
           },
           "assessment_version": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_version"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentVersion"
           },
           "date": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_date"
+            "$ref": "#/components/schemas/AssessmentResponseDate"
           },
           "assessment_response_events": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEvents"
           },
           "assessment_response_sections": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSections"
           },
           "comment": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_comment"
+            "$ref": "#/components/schemas/AssessmentResponseComment"
           }
         },
         "required": [
@@ -106,41 +106,41 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponseAnonymized": {
+      "AssessmentResponseAnonymized": {
         "type": "object",
         "properties": {
           "assessment_response_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "is_respondent_self": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_is_respondent_self"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedIsRespondentSelf"
           },
           "respondent_hash": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_respondent_hash"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedRespondentHash"
           },
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "assessment_slug": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_assessment_slug"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedAssessmentSlug"
           },
           "assessment_version": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_assessment_version"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedAssessmentVersion"
           },
           "date": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_date"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedDate"
           },
           "comment": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_comment"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedComment"
           },
           "assessment_response_events": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_assessment_response_events"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedAssessmentResponseEvents"
           },
           "assessment_response_sections": {
-            "$ref": "#/components/schemas/T_AssessmentResponseAnonymized_assessment_response_sections"
+            "$ref": "#/components/schemas/AssessmentResponseAnonymizedAssessmentResponseSections"
           }
         },
         "required": [
@@ -158,23 +158,23 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponseCreate": {
+      "AssessmentResponseCreate": {
         "type": "object",
         "properties": {
           "assessment_slug": {
-            "$ref": "#/components/schemas/T_AssessmentResponseCreate_assessment_slug"
+            "$ref": "#/components/schemas/AssessmentResponseCreateAssessmentSlug"
           },
           "assessment_version": {
-            "$ref": "#/components/schemas/T_AssessmentResponseCreate_assessment_version"
+            "$ref": "#/components/schemas/AssessmentResponseCreateAssessmentVersion"
           },
           "comment": {
-            "$ref": "#/components/schemas/T_AssessmentResponseCreate_comment"
+            "$ref": "#/components/schemas/AssessmentResponseCreateComment"
           },
           "assessment_response_sections": {
-            "$ref": "#/components/schemas/T_AssessmentResponseCreate_assessment_response_sections"
+            "$ref": "#/components/schemas/AssessmentResponseCreateAssessmentResponseSections"
           },
           "assessment_response_events": {
-            "$ref": "#/components/schemas/T_AssessmentResponseCreate_assessment_response_events"
+            "$ref": "#/components/schemas/AssessmentResponseCreateAssessmentResponseEvents"
           }
         },
         "required": [
@@ -186,11 +186,11 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponseList": {
+      "AssessmentResponseList": {
         "type": "object",
         "properties": {
           "assessment_response_list": {
-            "$ref": "#/components/schemas/T_AssessmentResponseList_assessment_response_list"
+            "$ref": "#/components/schemas/AssessmentResponseListAssessmentResponseList"
           }
         },
         "required": [
@@ -198,11 +198,11 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponseListAnonymized": {
+      "AssessmentResponseListAnonymized": {
         "type": "object",
         "properties": {
           "assessment_response_list_anonymized": {
-            "$ref": "#/components/schemas/T_AssessmentResponseListAnonymized_assessment_response_list_anonymized"
+            "$ref": "#/components/schemas/AssessmentResponseListAnonymizedAssessmentResponseListAnonymized"
           }
         },
         "required": [
@@ -210,17 +210,17 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponseUpdate": {
+      "AssessmentResponseUpdate": {
         "type": "object",
         "properties": {
           "comment": {
-            "$ref": "#/components/schemas/T_AssessmentResponseUpdate_comment"
+            "$ref": "#/components/schemas/AssessmentResponseUpdateComment"
           },
           "assessment_response_sections": {
-            "$ref": "#/components/schemas/T_AssessmentResponseUpdate_assessment_response_sections"
+            "$ref": "#/components/schemas/AssessmentResponseUpdateAssessmentResponseSections"
           },
           "assessment_response_events": {
-            "$ref": "#/components/schemas/T_AssessmentResponseUpdate_assessment_response_events"
+            "$ref": "#/components/schemas/AssessmentResponseUpdateAssessmentResponseEvents"
           }
         },
         "required": [
@@ -230,14 +230,14 @@
         ],
         "additionalProperties": false
       },
-      "T_AuthCredentialsPassword": {
+      "AuthCredentialsPassword": {
         "type": "object",
         "properties": {
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "password": {
-            "$ref": "#/components/schemas/T_AuthCredentialsPassword_password"
+            "$ref": "#/components/schemas/AuthCredentialsPasswordPassword"
           }
         },
         "required": [
@@ -246,11 +246,11 @@
         ],
         "additionalProperties": false
       },
-      "T_AuthCredentialsToken": {
+      "AuthCredentialsToken": {
         "type": "object",
         "properties": {
           "token": {
-            "$ref": "#/components/schemas/T_AuthCredentialsToken_token"
+            "$ref": "#/components/schemas/AuthCredentialsTokenToken"
           }
         },
         "required": [
@@ -258,17 +258,17 @@
         ],
         "additionalProperties": false
       },
-      "T_AuthResponse": {
+      "AuthResponse": {
         "type": "object",
         "properties": {
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "token": {
-            "$ref": "#/components/schemas/T_AuthResponse_token"
+            "$ref": "#/components/schemas/AuthResponseToken"
           },
           "expires_at": {
-            "$ref": "#/components/schemas/T_AuthResponse_expires_at"
+            "$ref": "#/components/schemas/AuthResponseExpiresAt"
           }
         },
         "required": [
@@ -278,11 +278,11 @@
         ],
         "additionalProperties": false
       },
-      "T_AuthToken": {
+      "AuthToken": {
         "type": "object",
         "properties": {
           "token": {
-            "$ref": "#/components/schemas/T_AuthToken_token"
+            "$ref": "#/components/schemas/AuthTokenToken"
           }
         },
         "required": [
@@ -290,14 +290,14 @@
         ],
         "additionalProperties": false
       },
-      "T_ServerInfo": {
+      "ServerInfo": {
         "type": "object",
         "properties": {
           "ok": {
-            "$ref": "#/components/schemas/T_ServerInfo_ok"
+            "$ref": "#/components/schemas/ServerInfoOk"
           },
           "up_since": {
-            "$ref": "#/components/schemas/T_ServerInfo_up_since"
+            "$ref": "#/components/schemas/ServerInfoUpSince"
           }
         },
         "required": [
@@ -306,23 +306,23 @@
         ],
         "additionalProperties": false
       },
-      "T_Participant": {
+      "Participant": {
         "type": "object",
         "properties": {
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "display_label": {
-            "$ref": "#/components/schemas/T_Participant_display_label"
+            "$ref": "#/components/schemas/ParticipantDisplayLabel"
           },
           "birth_year": {
-            "$ref": "#/components/schemas/T_Participant_birth_year"
+            "$ref": "#/components/schemas/ParticipantBirthYear"
           },
           "sex": {
-            "$ref": "#/components/schemas/T_Participant_sex"
+            "$ref": "#/components/schemas/ParticipantSex"
           }
         },
         "required": [
@@ -334,26 +334,26 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroup": {
+      "ParticipantGroup": {
         "type": "object",
         "properties": {
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "display_label": {
-            "$ref": "#/components/schemas/T_ParticipantGroup_display_label"
+            "$ref": "#/components/schemas/ParticipantGroupDisplayLabel"
           },
           "participants": {
-            "$ref": "#/components/schemas/T_ParticipantGroup_participants"
+            "$ref": "#/components/schemas/ParticipantGroupParticipants"
           },
           "participant_group_user_group_roles": {
-            "$ref": "#/components/schemas/T_ParticipantGroup_participant_group_user_group_roles"
+            "$ref": "#/components/schemas/ParticipantGroupParticipantGroupUserGroupRoles"
           },
           "participant_group_user_participant_roles": {
-            "$ref": "#/components/schemas/T_ParticipantGroup_participant_group_user_participant_roles"
+            "$ref": "#/components/schemas/ParticipantGroupParticipantGroupUserParticipantRoles"
           },
           "participant_group_user_participant_relationships": {
-            "$ref": "#/components/schemas/T_ParticipantGroup_participant_group_user_participant_relationships"
+            "$ref": "#/components/schemas/ParticipantGroupParticipantGroupUserParticipantRelationships"
           }
         },
         "required": [
@@ -366,14 +366,14 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroupCreate": {
+      "ParticipantGroupCreate": {
         "type": "object",
         "properties": {
           "display_label": {
-            "$ref": "#/components/schemas/T_ParticipantGroupCreate_display_label"
+            "$ref": "#/components/schemas/ParticipantGroupCreateDisplayLabel"
           },
           "owner_user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           }
         },
         "required": [
@@ -382,11 +382,11 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroupUpdate": {
+      "ParticipantGroupUpdate": {
         "type": "object",
         "properties": {
           "display_label": {
-            "$ref": "#/components/schemas/T_ParticipantGroupUpdate_display_label"
+            "$ref": "#/components/schemas/ParticipantGroupUpdateDisplayLabel"
           }
         },
         "required": [
@@ -394,17 +394,17 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroupUserGroupRole": {
+      "ParticipantGroupUserGroupRole": {
         "type": "object",
         "properties": {
           "group_role": {
-            "$ref": "#/components/schemas/T_GroupRole"
+            "$ref": "#/components/schemas/GroupRole"
           },
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           }
         },
         "required": [
@@ -414,20 +414,20 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroupUserParticipantRelationship": {
+      "ParticipantGroupUserParticipantRelationship": {
         "type": "object",
         "properties": {
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "user_participant_relationship": {
-            "$ref": "#/components/schemas/T_UserParticipantRelationship"
+            "$ref": "#/components/schemas/UserParticipantRelationship"
           },
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           }
         },
         "required": [
@@ -438,20 +438,20 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroupUserParticipantRole": {
+      "ParticipantGroupUserParticipantRole": {
         "type": "object",
         "properties": {
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_role": {
-            "$ref": "#/components/schemas/T_ParticipantRole"
+            "$ref": "#/components/schemas/ParticipantRole"
           },
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           }
         },
         "required": [
@@ -462,23 +462,23 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantSummary": {
+      "ParticipantSummary": {
         "type": "object",
         "properties": {
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "birth_year": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_birth_year"
+            "$ref": "#/components/schemas/ParticipantSummaryBirthYear"
           },
           "sex": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_sex"
+            "$ref": "#/components/schemas/ParticipantSummarySex"
           },
           "assessments": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessments"
           }
         },
         "required": [
@@ -490,17 +490,17 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantUpsert": {
+      "ParticipantUpsert": {
         "type": "object",
         "properties": {
           "display_label": {
-            "$ref": "#/components/schemas/T_ParticipantUpsert_display_label"
+            "$ref": "#/components/schemas/ParticipantUpsertDisplayLabel"
           },
           "birth_year": {
-            "$ref": "#/components/schemas/T_ParticipantUpsert_birth_year"
+            "$ref": "#/components/schemas/ParticipantUpsertBirthYear"
           },
           "sex": {
-            "$ref": "#/components/schemas/T_Participant_sex"
+            "$ref": "#/components/schemas/ParticipantSex"
           }
         },
         "required": [
@@ -510,17 +510,17 @@
         ],
         "additionalProperties": false
       },
-      "T_User": {
+      "User": {
         "type": "object",
         "properties": {
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "is_active": {
-            "$ref": "#/components/schemas/T_User_is_active"
+            "$ref": "#/components/schemas/UserIsActive"
           },
           "is_super_admin": {
-            "$ref": "#/components/schemas/T_User_is_super_admin"
+            "$ref": "#/components/schemas/UserIsSuperAdmin"
           }
         },
         "required": [
@@ -530,11 +530,11 @@
         ],
         "additionalProperties": false
       },
-      "T_UserCreate": {
+      "UserCreate": {
         "type": "object",
         "properties": {
           "password": {
-            "$ref": "#/components/schemas/T_UserCreate_password"
+            "$ref": "#/components/schemas/UserCreatePassword"
           }
         },
         "required": [
@@ -542,11 +542,11 @@
         ],
         "additionalProperties": false
       },
-      "T_UserList": {
+      "UserList": {
         "type": "object",
         "properties": {
           "user_list": {
-            "$ref": "#/components/schemas/T_UserList_user_list"
+            "$ref": "#/components/schemas/UserListUserList"
           }
         },
         "required": [
@@ -554,11 +554,11 @@
         ],
         "additionalProperties": false
       },
-      "T_UserPasswordReset": {
+      "UserPasswordReset": {
         "type": "object",
         "properties": {
           "password": {
-            "$ref": "#/components/schemas/T_UserPasswordReset_password"
+            "$ref": "#/components/schemas/UserPasswordResetPassword"
           }
         },
         "required": [
@@ -566,14 +566,14 @@
         ],
         "additionalProperties": false
       },
-      "T_UserParticipantGroupRoleList": {
+      "UserParticipantGroupRoleList": {
         "type": "object",
         "properties": {
           "participant_group_user_group_roles": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_group_roles"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserGroupRoles"
           },
           "participant_group_user_participant_roles": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_participant_roles"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserParticipantRoles"
           }
         },
         "required": [
@@ -582,14 +582,14 @@
         ],
         "additionalProperties": false
       },
-      "T_UserUpdate": {
+      "UserUpdate": {
         "type": "object",
         "properties": {
           "is_active": {
-            "$ref": "#/components/schemas/T_UserUpdate_is_active"
+            "$ref": "#/components/schemas/UserUpdateIsActive"
           },
           "is_super_admin": {
-            "$ref": "#/components/schemas/T_UserUpdate_is_super_admin"
+            "$ref": "#/components/schemas/UserUpdateIsSuperAdmin"
           }
         },
         "required": [
@@ -598,150 +598,150 @@
         ],
         "additionalProperties": false
       },
-      "T_Ack_ok": {
+      "AckOk": {
         "type": "boolean",
         "enum": [
           true
         ]
       },
-      "T_AssessmentResponse_assessment_slug": {
+      "AssessmentResponseAssessmentSlug": {
         "type": "string"
       },
-      "T_AssessmentResponse_assessment_version": {
+      "AssessmentResponseAssessmentVersion": {
         "type": "string"
       },
-      "T_AssessmentResponse_date": {
+      "AssessmentResponseDate": {
         "type": "string",
         "format": "date-time"
       },
-      "T_AssessmentResponse_assessment_response_events": {
+      "AssessmentResponseAssessmentResponseEvents": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEventsItem"
         }
       },
-      "T_AssessmentResponse_assessment_response_sections": {
+      "AssessmentResponseAssessmentResponseSections": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItem"
         }
       },
-      "T_AssessmentResponse_comment": {
+      "AssessmentResponseComment": {
         "type": "string"
       },
-      "T_AssessmentResponseAnonymized_is_respondent_self": {
+      "AssessmentResponseAnonymizedIsRespondentSelf": {
         "type": "boolean"
       },
-      "T_AssessmentResponseAnonymized_respondent_hash": {
+      "AssessmentResponseAnonymizedRespondentHash": {
         "type": "string"
       },
-      "T_AssessmentResponseAnonymized_assessment_slug": {
+      "AssessmentResponseAnonymizedAssessmentSlug": {
         "type": "string"
       },
-      "T_AssessmentResponseAnonymized_assessment_version": {
+      "AssessmentResponseAnonymizedAssessmentVersion": {
         "type": "string"
       },
-      "T_AssessmentResponseAnonymized_date": {
+      "AssessmentResponseAnonymizedDate": {
         "type": "string",
         "format": "date-time"
       },
-      "T_AssessmentResponseAnonymized_comment": {
+      "AssessmentResponseAnonymizedComment": {
         "type": "string"
       },
-      "T_AssessmentResponseAnonymized_assessment_response_events": {
+      "AssessmentResponseAnonymizedAssessmentResponseEvents": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEventsItem"
         }
       },
-      "T_AssessmentResponseAnonymized_assessment_response_sections": {
+      "AssessmentResponseAnonymizedAssessmentResponseSections": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItem"
         }
       },
-      "T_AssessmentResponseCreate_assessment_slug": {
+      "AssessmentResponseCreateAssessmentSlug": {
         "type": "string"
       },
-      "T_AssessmentResponseCreate_assessment_version": {
+      "AssessmentResponseCreateAssessmentVersion": {
         "type": "string"
       },
-      "T_AssessmentResponseCreate_comment": {
+      "AssessmentResponseCreateComment": {
         "type": "string"
       },
-      "T_AssessmentResponseCreate_assessment_response_sections": {
+      "AssessmentResponseCreateAssessmentResponseSections": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItem"
         }
       },
-      "T_AssessmentResponseCreate_assessment_response_events": {
+      "AssessmentResponseCreateAssessmentResponseEvents": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEventsItem"
         }
       },
-      "T_AssessmentResponseList_assessment_response_list": {
+      "AssessmentResponseListAssessmentResponseList": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse"
+          "$ref": "#/components/schemas/AssessmentResponse"
         }
       },
-      "T_AssessmentResponseListAnonymized_assessment_response_list_anonymized": {
+      "AssessmentResponseListAnonymizedAssessmentResponseListAnonymized": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponseAnonymized"
+          "$ref": "#/components/schemas/AssessmentResponseAnonymized"
         }
       },
-      "T_AssessmentResponseUpdate_comment": {
+      "AssessmentResponseUpdateComment": {
         "type": "string"
       },
-      "T_AssessmentResponseUpdate_assessment_response_sections": {
+      "AssessmentResponseUpdateAssessmentResponseSections": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItem"
         }
       },
-      "T_AssessmentResponseUpdate_assessment_response_events": {
+      "AssessmentResponseUpdateAssessmentResponseEvents": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEventsItem"
         }
       },
-      "T_AuthCredentialsPassword_password": {
+      "AuthCredentialsPasswordPassword": {
         "type": "string"
       },
-      "T_AuthCredentialsToken_token": {
+      "AuthCredentialsTokenToken": {
         "type": "string"
       },
-      "T_AuthResponse_token": {
+      "AuthResponseToken": {
         "type": "string"
       },
-      "T_AuthResponse_expires_at": {
+      "AuthResponseExpiresAt": {
         "type": "string",
         "format": "date-time"
       },
-      "T_AuthToken_token": {
+      "AuthTokenToken": {
         "type": "string"
       },
-      "T_ServerInfo_ok": {
+      "ServerInfoOk": {
         "type": "boolean",
         "enum": [
           true
         ]
       },
-      "T_ServerInfo_up_since": {
+      "ServerInfoUpSince": {
         "type": "string",
         "format": "date-time"
       },
-      "T_Participant_display_label": {
+      "ParticipantDisplayLabel": {
         "type": "string",
         "minLength": 4
       },
-      "T_Participant_birth_year": {
+      "ParticipantBirthYear": {
         "type": "integer"
       },
-      "T_Participant_sex": {
+      "ParticipantSex": {
         "type": "string",
         "enum": [
           "Male",
@@ -749,46 +749,46 @@
           "Other"
         ]
       },
-      "T_ParticipantGroup_display_label": {
+      "ParticipantGroupDisplayLabel": {
         "type": "string",
         "minLength": 4
       },
-      "T_ParticipantGroup_participants": {
+      "ParticipantGroupParticipants": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantGroup_participants_item"
+          "$ref": "#/components/schemas/ParticipantGroupParticipantsItem"
         }
       },
-      "T_ParticipantGroup_participant_group_user_group_roles": {
+      "ParticipantGroupParticipantGroupUserGroupRoles": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantGroup_participant_group_user_group_roles_item"
+          "$ref": "#/components/schemas/ParticipantGroupParticipantGroupUserGroupRolesItem"
         }
       },
-      "T_ParticipantGroup_participant_group_user_participant_roles": {
+      "ParticipantGroupParticipantGroupUserParticipantRoles": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantGroup_participant_group_user_participant_roles_item"
+          "$ref": "#/components/schemas/ParticipantGroupParticipantGroupUserParticipantRolesItem"
         }
       },
-      "T_ParticipantGroup_participant_group_user_participant_relationships": {
+      "ParticipantGroupParticipantGroupUserParticipantRelationships": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantGroup_participant_group_user_participant_relationships_item"
+          "$ref": "#/components/schemas/ParticipantGroupParticipantGroupUserParticipantRelationshipsItem"
         }
       },
-      "T_ParticipantGroupCreate_display_label": {
+      "ParticipantGroupCreateDisplayLabel": {
         "type": "string",
         "minLength": 4
       },
-      "T_ParticipantGroupUpdate_display_label": {
+      "ParticipantGroupUpdateDisplayLabel": {
         "type": "string",
         "minLength": 4
       },
-      "T_ParticipantSummary_birth_year": {
+      "ParticipantSummaryBirthYear": {
         "type": "integer"
       },
-      "T_ParticipantSummary_sex": {
+      "ParticipantSummarySex": {
         "type": "string",
         "enum": [
           "Male",
@@ -796,71 +796,71 @@
           "Other"
         ]
       },
-      "T_ParticipantSummary_assessments": {
+      "ParticipantSummaryAssessments": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item"
+          "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItem"
         }
       },
-      "T_ParticipantUpsert_display_label": {
+      "ParticipantUpsertDisplayLabel": {
         "type": "string",
         "minLength": 4
       },
-      "T_ParticipantUpsert_birth_year": {
+      "ParticipantUpsertBirthYear": {
         "type": "integer"
       },
-      "T_User_is_active": {
+      "UserIsActive": {
         "type": "boolean"
       },
-      "T_User_is_super_admin": {
+      "UserIsSuperAdmin": {
         "type": "boolean"
       },
-      "T_UserCreate_password": {
+      "UserCreatePassword": {
         "type": "string",
         "minLength": 8
       },
-      "T_UserList_user_list": {
+      "UserListUserList": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_User"
+          "$ref": "#/components/schemas/User"
         }
       },
-      "T_UserPasswordReset_password": {
+      "UserPasswordResetPassword": {
         "type": "string",
         "minLength": 8
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_group_roles": {
+      "UserParticipantGroupRoleListParticipantGroupUserGroupRoles": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_group_roles_item"
+          "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserGroupRolesItem"
         }
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_participant_roles": {
+      "UserParticipantGroupRoleListParticipantGroupUserParticipantRoles": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item"
+          "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItem"
         }
       },
-      "T_UserUpdate_is_active": {
+      "UserUpdateIsActive": {
         "type": "boolean"
       },
-      "T_UserUpdate_is_super_admin": {
+      "UserUpdateIsSuperAdmin": {
         "type": "boolean"
       },
-      "T_AssessmentResponse_assessment_response_events_item": {
+      "AssessmentResponseAssessmentResponseEventsItem": {
         "type": "object",
         "properties": {
           "assessment_response_event_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "kind": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events_item_kind"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEventsItemKind"
           },
           "offset_ms": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_events_item_offset_ms"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseEventsItemOffsetMs"
           },
           "payload": {
-            "$ref": "#/components/schemas/T_JsonRecord"
+            "$ref": "#/components/schemas/JsonRecord"
           }
         },
         "required": [
@@ -871,14 +871,14 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponse_assessment_response_sections_item": {
+      "AssessmentResponseAssessmentResponseSectionsItem": {
         "type": "object",
         "properties": {
           "section_slug": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item_section_slug"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItemSectionSlug"
           },
           "assessment_response_items": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item_assessment_response_items"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItems"
           }
         },
         "required": [
@@ -887,14 +887,14 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroup_participants_item": {
+      "ParticipantGroupParticipantsItem": {
         "type": "object",
         "properties": {
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "display_label": {
-            "$ref": "#/components/schemas/T_ParticipantGroup_participants_item_display_label"
+            "$ref": "#/components/schemas/ParticipantGroupParticipantsItemDisplayLabel"
           }
         },
         "required": [
@@ -903,14 +903,14 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroup_participant_group_user_group_roles_item": {
+      "ParticipantGroupParticipantGroupUserGroupRolesItem": {
         "type": "object",
         "properties": {
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "group_role": {
-            "$ref": "#/components/schemas/T_GroupRole"
+            "$ref": "#/components/schemas/GroupRole"
           }
         },
         "required": [
@@ -919,17 +919,17 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroup_participant_group_user_participant_roles_item": {
+      "ParticipantGroupParticipantGroupUserParticipantRolesItem": {
         "type": "object",
         "properties": {
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "participant_role": {
-            "$ref": "#/components/schemas/T_ParticipantRole"
+            "$ref": "#/components/schemas/ParticipantRole"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           }
         },
         "required": [
@@ -939,17 +939,17 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantGroup_participant_group_user_participant_relationships_item": {
+      "ParticipantGroupParticipantGroupUserParticipantRelationshipsItem": {
         "type": "object",
         "properties": {
           "user_email": {
-            "$ref": "#/components/schemas/T_Email"
+            "$ref": "#/components/schemas/Email"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "user_participant_relationship": {
-            "$ref": "#/components/schemas/T_UserParticipantRelationship"
+            "$ref": "#/components/schemas/UserParticipantRelationship"
           }
         },
         "required": [
@@ -959,14 +959,14 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantSummary_assessments_item": {
+      "ParticipantSummaryAssessmentsItem": {
         "type": "object",
         "properties": {
           "assessment_slug": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_assessment_slug"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemAssessmentSlug"
           },
           "sections": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSections"
           }
         },
         "required": [
@@ -975,14 +975,14 @@
         ],
         "additionalProperties": false
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_group_roles_item": {
+      "UserParticipantGroupRoleListParticipantGroupUserGroupRolesItem": {
         "type": "object",
         "properties": {
           "group_role": {
-            "$ref": "#/components/schemas/T_GroupRole"
+            "$ref": "#/components/schemas/GroupRole"
           },
           "participant_group": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_group_roles_item_participant_group"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserGroupRolesItemParticipantGroup"
           }
         },
         "required": [
@@ -991,14 +991,14 @@
         ],
         "additionalProperties": false
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item": {
+      "UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItem": {
         "type": "object",
         "properties": {
           "participant_role": {
-            "$ref": "#/components/schemas/T_ParticipantRole"
+            "$ref": "#/components/schemas/ParticipantRole"
           },
           "participant": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipant"
           }
         },
         "required": [
@@ -1007,41 +1007,41 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponse_assessment_response_events_item_kind": {
+      "AssessmentResponseAssessmentResponseEventsItemKind": {
         "type": "string"
       },
-      "T_AssessmentResponse_assessment_response_events_item_offset_ms": {
+      "AssessmentResponseAssessmentResponseEventsItemOffsetMs": {
         "type": "integer"
       },
-      "T_AssessmentResponse_assessment_response_sections_item_section_slug": {
+      "AssessmentResponseAssessmentResponseSectionsItemSectionSlug": {
         "type": "string"
       },
-      "T_AssessmentResponse_assessment_response_sections_item_assessment_response_items": {
+      "AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItems": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item_assessment_response_items_item"
+          "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItemsItem"
         }
       },
-      "T_ParticipantGroup_participants_item_display_label": {
+      "ParticipantGroupParticipantsItemDisplayLabel": {
         "type": "string"
       },
-      "T_ParticipantSummary_assessments_item_assessment_slug": {
+      "ParticipantSummaryAssessmentsItemAssessmentSlug": {
         "type": "string"
       },
-      "T_ParticipantSummary_assessments_item_sections": {
+      "ParticipantSummaryAssessmentsItemSections": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item"
+          "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItem"
         }
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_group_roles_item_participant_group": {
+      "UserParticipantGroupRoleListParticipantGroupUserGroupRolesItemParticipantGroup": {
         "type": "object",
         "properties": {
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "display_label": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_group_roles_item_participant_group_display_label"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserGroupRolesItemParticipantGroupDisplayLabel"
           }
         },
         "required": [
@@ -1050,23 +1050,23 @@
         ],
         "additionalProperties": false
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant": {
+      "UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipant": {
         "type": "object",
         "properties": {
           "participant_group_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "participant_id": {
-            "$ref": "#/components/schemas/T_Uuid"
+            "$ref": "#/components/schemas/Uuid"
           },
           "display_label": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant_display_label"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipantDisplayLabel"
           },
           "birth_year": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant_birth_year"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipantBirthYear"
           },
           "sex": {
-            "$ref": "#/components/schemas/T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant_sex"
+            "$ref": "#/components/schemas/UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipantSex"
           }
         },
         "required": [
@@ -1078,14 +1078,14 @@
         ],
         "additionalProperties": false
       },
-      "T_AssessmentResponse_assessment_response_sections_item_assessment_response_items_item": {
+      "AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItemsItem": {
         "type": "object",
         "properties": {
           "item_slug": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item_assessment_response_items_item_item_slug"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItemsItemItemSlug"
           },
           "value": {
-            "$ref": "#/components/schemas/T_AssessmentResponse_assessment_response_sections_item_assessment_response_items_item_value"
+            "$ref": "#/components/schemas/AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItemsItemValue"
           }
         },
         "required": [
@@ -1094,14 +1094,14 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantSummary_assessments_item_sections_item": {
+      "ParticipantSummaryAssessmentsItemSectionsItem": {
         "type": "object",
         "properties": {
           "section_slug": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_section_slug"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemSectionSlug"
           },
           "items": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItems"
           }
         },
         "required": [
@@ -1110,16 +1110,16 @@
         ],
         "additionalProperties": false
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_group_roles_item_participant_group_display_label": {
+      "UserParticipantGroupRoleListParticipantGroupUserGroupRolesItemParticipantGroupDisplayLabel": {
         "type": "string"
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant_display_label": {
+      "UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipantDisplayLabel": {
         "type": "string"
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant_birth_year": {
+      "UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipantBirthYear": {
         "type": "integer"
       },
-      "T_UserParticipantGroupRoleList_participant_group_user_participant_roles_item_participant_sex": {
+      "UserParticipantGroupRoleListParticipantGroupUserParticipantRolesItemParticipantSex": {
         "type": "string",
         "enum": [
           "Male",
@@ -1127,42 +1127,42 @@
           "Other"
         ]
       },
-      "T_AssessmentResponse_assessment_response_sections_item_assessment_response_items_item_item_slug": {
+      "AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItemsItemItemSlug": {
         "type": "string"
       },
-      "T_AssessmentResponse_assessment_response_sections_item_assessment_response_items_item_value": {
+      "AssessmentResponseAssessmentResponseSectionsItemAssessmentResponseItemsItemValue": {
         "type": "number",
         "nullable": true
       },
-      "T_ParticipantSummary_assessments_item_sections_item_section_slug": {
+      "ParticipantSummaryAssessmentsItemSectionsItemSectionSlug": {
         "type": "string"
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItems": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item"
+          "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItem"
         }
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItem": {
         "type": "object",
         "properties": {
           "item_slug": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item_item_slug"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItemItemSlug"
           },
           "num": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item_num"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItemNum"
           },
           "min": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item_min"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItemMin"
           },
           "max": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item_max"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItemMax"
           },
           "mean": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item_mean"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItemMean"
           },
           "median": {
-            "$ref": "#/components/schemas/T_ParticipantSummary_assessments_item_sections_item_items_item_median"
+            "$ref": "#/components/schemas/ParticipantSummaryAssessmentsItemSectionsItemItemsItemMedian"
           }
         },
         "required": [
@@ -1175,22 +1175,22 @@
         ],
         "additionalProperties": false
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item_item_slug": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItemItemSlug": {
         "type": "string"
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item_num": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItemNum": {
         "type": "number"
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item_min": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItemMin": {
         "type": "number"
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item_max": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItemMax": {
         "type": "number"
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item_mean": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItemMean": {
         "type": "number"
       },
-      "T_ParticipantSummary_assessments_item_sections_item_items_item_median": {
+      "ParticipantSummaryAssessmentsItemSectionsItemItemsItemMedian": {
         "type": "number"
       }
     }
@@ -1222,7 +1222,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_AuthToken"
+                "$ref": "#/components/schemas/AuthToken"
               }
             }
           }
@@ -1233,7 +1233,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }
@@ -1251,7 +1251,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_User"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -1267,7 +1267,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_AuthCredentialsPassword"
+                "$ref": "#/components/schemas/AuthCredentialsPassword"
               }
             }
           }
@@ -1278,7 +1278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AuthResponse"
+                  "$ref": "#/components/schemas/AuthResponse"
                 }
               }
             }
@@ -1294,7 +1294,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_AuthCredentialsToken"
+                "$ref": "#/components/schemas/AuthCredentialsToken"
               }
             }
           }
@@ -1305,7 +1305,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AuthResponse"
+                  "$ref": "#/components/schemas/AuthResponse"
                 }
               }
             }
@@ -1323,7 +1323,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ServerInfo"
+                  "$ref": "#/components/schemas/ServerInfo"
                 }
               }
             }
@@ -1341,7 +1341,7 @@
             "name": "assessment_response_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1349,7 +1349,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1357,7 +1357,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1367,7 +1367,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }
@@ -1381,7 +1381,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_AssessmentResponseUpdate"
+                "$ref": "#/components/schemas/AssessmentResponseUpdate"
               }
             }
           }
@@ -1392,7 +1392,7 @@
             "name": "assessment_response_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1400,7 +1400,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1408,7 +1408,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1418,7 +1418,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AssessmentResponse"
+                  "$ref": "#/components/schemas/AssessmentResponse"
                 }
               }
             }
@@ -1436,7 +1436,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1444,7 +1444,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1454,7 +1454,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AssessmentResponseList"
+                  "$ref": "#/components/schemas/AssessmentResponseList"
                 }
               }
             }
@@ -1468,7 +1468,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_AssessmentResponseCreate"
+                "$ref": "#/components/schemas/AssessmentResponseCreate"
               }
             }
           }
@@ -1479,7 +1479,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1487,7 +1487,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1497,7 +1497,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AssessmentResponse"
+                  "$ref": "#/components/schemas/AssessmentResponse"
                 }
               }
             }
@@ -1515,7 +1515,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1523,7 +1523,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1533,7 +1533,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AssessmentResponseListAnonymized"
+                  "$ref": "#/components/schemas/AssessmentResponseListAnonymized"
                 }
               }
             }
@@ -1551,7 +1551,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1559,7 +1559,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1569,7 +1569,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }
@@ -1583,7 +1583,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_ParticipantUpsert"
+                "$ref": "#/components/schemas/ParticipantUpsert"
               }
             }
           }
@@ -1594,7 +1594,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1602,7 +1602,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1612,7 +1612,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Participant"
+                  "$ref": "#/components/schemas/Participant"
                 }
               }
             }
@@ -1630,7 +1630,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1638,7 +1638,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1648,7 +1648,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantSummary"
+                  "$ref": "#/components/schemas/ParticipantSummary"
                 }
               }
             }
@@ -1664,7 +1664,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_ParticipantUpsert"
+                "$ref": "#/components/schemas/ParticipantUpsert"
               }
             }
           }
@@ -1675,7 +1675,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -1685,7 +1685,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Participant"
+                  "$ref": "#/components/schemas/Participant"
                 }
               }
             }
@@ -1703,7 +1703,7 @@
             "name": "group_role",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_GroupRole"
+              "$ref": "#/components/schemas/GroupRole"
             }
           },
           {
@@ -1711,7 +1711,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1719,7 +1719,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -1729,7 +1729,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }
@@ -1745,7 +1745,7 @@
             "name": "group_role",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_GroupRole"
+              "$ref": "#/components/schemas/GroupRole"
             }
           },
           {
@@ -1753,7 +1753,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1761,7 +1761,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -1771,7 +1771,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantGroupUserGroupRole"
+                  "$ref": "#/components/schemas/ParticipantGroupUserGroupRole"
                 }
               }
             }
@@ -1789,7 +1789,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1797,7 +1797,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1805,7 +1805,7 @@
             "name": "user_participant_relationship",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_UserParticipantRelationship"
+              "$ref": "#/components/schemas/UserParticipantRelationship"
             }
           },
           {
@@ -1813,7 +1813,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -1823,7 +1823,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }
@@ -1839,7 +1839,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1847,7 +1847,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1855,7 +1855,7 @@
             "name": "user_participant_relationship",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_UserParticipantRelationship"
+              "$ref": "#/components/schemas/UserParticipantRelationship"
             }
           },
           {
@@ -1863,7 +1863,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -1873,7 +1873,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantGroupUserParticipantRelationship"
+                  "$ref": "#/components/schemas/ParticipantGroupUserParticipantRelationship"
                 }
               }
             }
@@ -1891,7 +1891,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1899,7 +1899,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1907,7 +1907,7 @@
             "name": "participant_role",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_ParticipantRole"
+              "$ref": "#/components/schemas/ParticipantRole"
             }
           },
           {
@@ -1915,7 +1915,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -1925,7 +1925,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }
@@ -1941,7 +1941,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1949,7 +1949,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -1957,7 +1957,7 @@
             "name": "participant_role",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_ParticipantRole"
+              "$ref": "#/components/schemas/ParticipantRole"
             }
           },
           {
@@ -1965,7 +1965,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -1975,7 +1975,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantGroupUserParticipantRole"
+                  "$ref": "#/components/schemas/ParticipantGroupUserParticipantRole"
                 }
               }
             }
@@ -1993,7 +1993,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -2003,7 +2003,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantGroup"
+                  "$ref": "#/components/schemas/ParticipantGroup"
                 }
               }
             }
@@ -2017,7 +2017,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_ParticipantGroupUpdate"
+                "$ref": "#/components/schemas/ParticipantGroupUpdate"
               }
             }
           }
@@ -2028,7 +2028,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -2038,7 +2038,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantGroup"
+                  "$ref": "#/components/schemas/ParticipantGroup"
                 }
               }
             }
@@ -2056,7 +2056,7 @@
             "name": "participant_group_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           },
           {
@@ -2064,7 +2064,7 @@
             "name": "participant_id",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Uuid"
+              "$ref": "#/components/schemas/Uuid"
             }
           }
         ],
@@ -2074,7 +2074,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_AssessmentResponseListAnonymized"
+                  "$ref": "#/components/schemas/AssessmentResponseListAnonymized"
                 }
               }
             }
@@ -2090,7 +2090,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_ParticipantGroupCreate"
+                "$ref": "#/components/schemas/ParticipantGroupCreate"
               }
             }
           }
@@ -2101,7 +2101,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_ParticipantGroup"
+                  "$ref": "#/components/schemas/ParticipantGroup"
                 }
               }
             }
@@ -2119,7 +2119,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_UserList"
+                  "$ref": "#/components/schemas/UserList"
                 }
               }
             }
@@ -2137,7 +2137,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -2147,7 +2147,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_UserParticipantGroupRoleList"
+                  "$ref": "#/components/schemas/UserParticipantGroupRoleList"
                 }
               }
             }
@@ -2163,7 +2163,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_UserCreate"
+                "$ref": "#/components/schemas/UserCreate"
               }
             }
           }
@@ -2174,7 +2174,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -2184,7 +2184,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_User"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -2198,7 +2198,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_UserUpdate"
+                "$ref": "#/components/schemas/UserUpdate"
               }
             }
           }
@@ -2209,7 +2209,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -2219,7 +2219,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_User"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -2235,7 +2235,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/T_UserPasswordReset"
+                "$ref": "#/components/schemas/UserPasswordReset"
               }
             }
           }
@@ -2246,7 +2246,7 @@
             "name": "user_email",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/T_Email"
+              "$ref": "#/components/schemas/Email"
             }
           }
         ],
@@ -2256,7 +2256,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T_Ack"
+                  "$ref": "#/components/schemas/Ack"
                 }
               }
             }

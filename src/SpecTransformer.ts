@@ -1,5 +1,6 @@
 import { inspect } from "util";
 
+import { camelCase, pascalCase, snakeCase, paramCase } from "change-case";
 import deepEqual from "fast-deep-equal";
 
 import {
@@ -194,16 +195,28 @@ type TransformWithTimingsResult = {
   };
 };
 
+type SchemaKeysOptions = {
+  readonly removeInitialSchemasPrefix?: boolean;
+  readonly changeCase?:
+    | `preserve`
+    | `camelCase`
+    | `PascalCase`
+    | `snake_case`
+    | `param-case`;
+};
+
 export type TransformOptions = {
   readonly rewriteSchemasAbsoluteRefs?: boolean;
   readonly extractSchemasProperties?: boolean | ExtractSchemaPropertiesKey[];
   readonly mergeRefs?: Ref[];
   readonly deleteUnusedSchemas?: boolean;
+  readonly schemaKeys?: SchemaKeysOptions;
 };
 
 export class SpecTransformer {
   private readonly DEBUG: boolean;
   private readonly spec: Spec;
+  private readonly initialSchemaKeys: string[];
 
   private readonly schemasPath: string[];
 
@@ -215,6 +228,7 @@ export class SpecTransformer {
     this.schemasPath = isOpenApiSpec(spec)
       ? [`components`, `schemas`]
       : [`definitions`];
+    this.initialSchemaKeys = this.getSchemaKeys();
     this.DEBUG = DEBUG;
   }
 
@@ -249,6 +263,36 @@ export class SpecTransformer {
       return this.throw(new Error(`schemas is not a Record`));
     }
     return Object.keys(schemas);
+  };
+
+  private readonly createSchemaKey = (
+    parentSchemaKey: string,
+    path: string[],
+    schemaKeysOptions?: SchemaKeysOptions,
+  ): string => {
+    const parts: string[] = [];
+    if (
+      !schemaKeysOptions?.removeInitialSchemasPrefix ||
+      !this.initialSchemaKeys.includes(parentSchemaKey)
+    ) {
+      parts.push(parentSchemaKey);
+    }
+    parts.push(...path);
+    const baseName = parts.join(`_`);
+    const schemaKey =
+      schemaKeysOptions?.changeCase === `PascalCase`
+        ? pascalCase(baseName)
+        : schemaKeysOptions?.changeCase === `camelCase`
+        ? camelCase(baseName)
+        : schemaKeysOptions?.changeCase === `param-case`
+        ? paramCase(baseName)
+        : schemaKeysOptions?.changeCase === `snake_case`
+        ? snakeCase(baseName)
+        : baseName;
+    if (this.getSchemaKeys().includes(schemaKey)) {
+      throw new Error(`schemaKey(schemaKey='${schemaKey}') already exists`);
+    }
+    return schemaKey;
   };
 
   private readonly getAtPath = (path: string[]): unknown =>
@@ -410,8 +454,9 @@ export class SpecTransformer {
   };
 
   private readonly extractSchemaPropertiesAtKey = (
-    schemaKey: string,
+    parentSchemaKey: string,
     propertiesKey: ExtractSchemaPropertiesKey,
+    schemaKeysOptions?: SchemaKeysOptions,
   ): boolean => {
     let globalDirty = false;
     let dirty = true;
@@ -422,15 +467,20 @@ export class SpecTransformer {
         propertiesKey === `additionalProperties` ||
         propertiesKey === `patternProperties`
       ) {
-        const properties = this.getSchema(schemaKey)[propertiesKey];
+        const properties = this.getSchema(parentSchemaKey)[propertiesKey];
         if (isRecord(properties)) {
           for (const k of Object.keys(properties)) {
             const property = properties[k];
             if (!isRef(property)) {
+              const nextSchemaKey = this.createSchemaKey(
+                parentSchemaKey,
+                [`${k}`],
+                schemaKeysOptions,
+              );
               this.extractSchemaPathAsSchema(
-                schemaKey,
-                [`properties`, k],
-                `${schemaKey}_${k}`,
+                parentSchemaKey,
+                [propertiesKey, k],
+                nextSchemaKey,
               );
               dirty = true;
               break;
@@ -439,12 +489,17 @@ export class SpecTransformer {
         }
       }
       if (propertiesKey === `items`) {
-        const properties = this.getSchema(schemaKey)[propertiesKey];
+        const properties = this.getSchema(parentSchemaKey)[propertiesKey];
         if (isRecord(properties) && !isRef(properties)) {
+          const nextSchemaKey = this.createSchemaKey(
+            parentSchemaKey,
+            [`item`],
+            schemaKeysOptions,
+          );
           this.extractSchemaPathAsSchema(
-            schemaKey,
+            parentSchemaKey,
             [`items`],
-            `${schemaKey}_item`,
+            nextSchemaKey,
           );
           dirty = true;
         }
@@ -459,13 +514,20 @@ export class SpecTransformer {
   private readonly extractSchemaProperties = (
     schemaKey: string,
     propertiesKeys: ExtractSchemaPropertiesKey[],
+    schemaKeysOptions?: SchemaKeysOptions,
   ): boolean => {
     let globalDirty = false;
     let dirty = true;
     while (dirty) {
       dirty = false;
       for (const propertiesKey of propertiesKeys) {
-        if (this.extractSchemaPropertiesAtKey(schemaKey, propertiesKey)) {
+        if (
+          this.extractSchemaPropertiesAtKey(
+            schemaKey,
+            propertiesKey,
+            schemaKeysOptions,
+          )
+        ) {
           dirty = true;
         }
       }
@@ -474,8 +536,18 @@ export class SpecTransformer {
       }
     }
     for (const propertiesKey of propertiesKeys) {
-      if (this.extractSchemaPropertiesAtKey(schemaKey, propertiesKey)) {
-        this.extractSchemaProperties(schemaKey, propertiesKeys);
+      if (
+        this.extractSchemaPropertiesAtKey(
+          schemaKey,
+          propertiesKey,
+          schemaKeysOptions,
+        )
+      ) {
+        this.extractSchemaProperties(
+          schemaKey,
+          propertiesKeys,
+          schemaKeysOptions,
+        );
         return true;
       }
     }
@@ -484,13 +556,20 @@ export class SpecTransformer {
 
   private readonly extractSchemasProperties = (
     propertiesKeys: ExtractSchemaPropertiesKey[],
+    schemaKeysOptions?: SchemaKeysOptions,
   ): void => {
     this._DEBUG(`extractSchemasProperties`);
     let dirty = true;
     while (dirty) {
       dirty = false;
       for (const schemaKey of this.getSchemaKeys()) {
-        if (this.extractSchemaProperties(schemaKey, propertiesKeys)) {
+        if (
+          this.extractSchemaProperties(
+            schemaKey,
+            propertiesKeys,
+            schemaKeysOptions,
+          )
+        ) {
           dirty = true;
           break;
         }
@@ -570,7 +649,10 @@ export class SpecTransformer {
         )
           ? defaultExtractSchemaPropertiesKey
           : opts.extractSchemasProperties;
-        this.extractSchemasProperties(extractSchemasPropertiesKeys);
+        this.extractSchemasProperties(
+          extractSchemasPropertiesKeys,
+          opts.schemaKeys,
+        );
       });
 
       this._DEBUG({ extractSchemasProperties });

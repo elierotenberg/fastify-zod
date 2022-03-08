@@ -532,6 +532,18 @@ Output:
 }
 ```
 
+- `schemaKeys` option
+
+This option controls the behavior of newly created schemas (e.g. during `extractSchemasProperties` transform).
+
+Available configurations:
+
+- `schemaKeys.removeInitialSchemasPrefix`: remove `schemaKey` prefix of initial schemas to create less verbose schema names, e.g. `TodoState` instead of `MySchema_TodoState`
+
+- `schemaKeys.changeCase`: change case of generated schema keys. Defaults to `preserve`. In this case, original schema key and property key prefixes are preserved, and segments are underscore-separated.
+
+In case of schema key conflict, an error will be thrown during `transform`.
+
 #### SpecTransformer#transform(options: TransformOptions)
 
 Applies the given transforms.
@@ -544,6 +556,10 @@ Default options:
   extractSchemasProperties?: boolean = true,
   mergeRefs?: { $ref: string }[] = [],
   deleteUnusedSchemas?: boolean = true,
+  schemaKeys?: {
+    removeInitialSchemasPrefix: boolean = false,
+    changeCase: "preserve" | "camelCase" | "PascalCase" | "snake_case" | "param-case" = "preserve"
+  } = {}
 }
 ```
 

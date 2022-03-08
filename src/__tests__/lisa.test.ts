@@ -1,4 +1,4 @@
-import { readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 
 import { SpecTransformer } from "../SpecTransformer";
@@ -38,7 +38,24 @@ test(`lisa`, async () => {
       $ref(`ParticipantGroupId`),
       $ref(`UserParticipantRelationship`),
     ],
+    schemaKeys: {
+      removeInitialSchemasPrefix: true,
+      changeCase: `PascalCase`,
+    },
   });
+
+  await writeFile(
+    join(
+      __dirname,
+      `..`,
+      `..`,
+      `src`,
+      `__tests__`,
+      `lisa.openapi.transformed.fixtures.json`,
+    ),
+    JSON.stringify(result, null, 2),
+    { encoding: `utf-8` },
+  );
 
   const transformedSpec = JSON.parse(
     await readFile(
