@@ -93,13 +93,15 @@ export type FastifyZod<M extends Models> = {
 
 export const withRefResolver = (
   options: FastifyDynamicSwaggerOptions,
-): FastifyDynamicSwaggerOptions =>
-  ({
-    ...options,
-    refResolver: {
-      buildLocalReference: (json: { $id: string }) => json.$id,
-    },
-  } as FastifyDynamicSwaggerOptions);
+): FastifyDynamicSwaggerOptions => ({
+  ...options,
+  refResolver: {
+    ...options.refResolver,
+    clone: true,
+    buildLocalReference: (json, _baseUri, _fragment, i) =>
+      typeof json.$id === `string` ? json.$id : `def-${i}`,
+  },
+});
 
 export const register = <S extends Models>(
   f: FastifyInstance,
