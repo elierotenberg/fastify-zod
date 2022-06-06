@@ -1,5 +1,5 @@
 import fastify, { FastifyInstance, FastifyServerOptions } from "fastify";
-import fastifySwagger, { FastifyDynamicSwaggerOptions } from "fastify-swagger";
+import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
 import { NotFound, BadRequest } from "http-errors";
 
 import { buildJsonSchemas, withRefResolver } from "..";

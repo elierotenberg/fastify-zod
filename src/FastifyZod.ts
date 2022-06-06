@@ -4,7 +4,7 @@ import {
   FastifySchema,
   HTTPMethods,
 } from "fastify";
-import fastifySwagger, { FastifyDynamicSwaggerOptions } from "fastify-swagger";
+import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
 import * as yaml from "js-yaml";
 
 import { SpecTransformer, TransformOptions } from "./SpecTransformer";
