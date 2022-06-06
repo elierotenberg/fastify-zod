@@ -1,10 +1,10 @@
+import { tExpect } from "typed-jest-expect";
+
 import {
   Configuration,
   DefaultApi,
   SchemaTodoItemState,
-} from "fastify-zod-test-openapi-client";
-import { tExpect } from "typed-jest-expect";
-
+} from "../../test-openapi-client";
 import { buildJsonSchemas } from "..";
 
 import { models } from "./models.fixtures";
