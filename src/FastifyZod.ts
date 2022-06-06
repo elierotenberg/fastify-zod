@@ -30,18 +30,21 @@ type RouteHandlerParams<
   M extends Models,
   Params extends void | SchemaKey<M>,
   Body extends void | SchemaKey<M>,
-> = FastifyRequest & {
-  readonly params: SchemaTypeOption<M, Params>;
-  readonly body: SchemaTypeOption<M, Body>;
-};
+  Querystring extends void | SchemaKey<M>,
+> = FastifyRequest<{
+  Params: SchemaTypeOption<M, Params>;
+  Body: SchemaTypeOption<M, Body>;
+  Querystring: SchemaTypeOption<M, Querystring>;
+}>;
 
 type RouteHandler<
   M extends Models,
   Params extends void | SchemaKey<M>,
   Body extends void | SchemaKey<M>,
   Reply extends void | SchemaKey<M>,
+  Querystring extends void | SchemaKey<M>,
 > = (
-  params: RouteHandlerParams<M, Params, Body>,
+  params: RouteHandlerParams<M, Params, Body, Querystring>,
 ) => Promise<SchemaTypeOption<M, Reply>>;
 
 type RouteConfig<
@@ -50,6 +53,7 @@ type RouteConfig<
   Params extends void | SchemaKey<M> = void,
   Body extends void | SchemaKey<M> = void,
   Reply extends void | SchemaKey<M> = void,
+  Querystring extends void | SchemaKey<M> = void,
 > = {
   readonly url: string;
   readonly method: Method;
@@ -73,7 +77,13 @@ type RouteConfig<
         readonly description: string;
         readonly key: Exclude<Reply, void>;
       };
-  readonly handler: RouteHandler<M, Params, Body, Reply>;
+  readonly querystring?:
+    | Exclude<Querystring, void>
+    | {
+        readonly description: string;
+        readonly key: Exclude<Querystring, void>;
+      };
+  readonly handler: RouteHandler<M, Params, Body, Reply, Querystring>;
 } & FastifySchema;
 
 export type FastifyZod<M extends Models> = {
@@ -81,15 +91,20 @@ export type FastifyZod<M extends Models> = {
     Params extends void | SchemaKey<M> = void,
     Body extends void | SchemaKey<M> = void,
     Reply extends void | SchemaKey<M> = void,
+    Querystring extends void | SchemaKey<M> = void,
   >(
     url: string,
     config: Omit<
-      RouteConfig<M, Method, Params, Body, Reply>,
+      RouteConfig<M, Method, Params, Body, Reply, Querystring>,
       `url` | `method` | `schema` | `handler`
     >,
-    handler: RouteHandler<M, Params, Body, Reply>,
+    handler: RouteHandler<M, Params, Body, Reply, Querystring>,
   ) => void;
 };
+
+export interface FastifyZodInstance<M extends Models> extends FastifyInstance {
+  readonly zod: FastifyZod<M>;
+}
 
 export const withRefResolver = (
   options: FastifyDynamicSwaggerOptions,
@@ -106,7 +121,7 @@ export const withRefResolver = (
 export const register = <S extends Models>(
   f: FastifyInstance,
   { jsonSchemas: { schemas, $ref }, swaggerOptions }: RegisterOptions<S>,
-): void => {
+): FastifyZodInstance<S> => {
   for (const schema of schemas) {
     f.addSchema(schema);
   }
@@ -185,6 +200,7 @@ export const register = <S extends Models>(
     Params extends void | SchemaKey<S> = void,
     Body extends void | SchemaKey<S> = void,
     Reply extends void | SchemaKey<S> = void,
+    Querystring extends void | SchemaKey<S> = void,
   >({
     method,
     url,
@@ -192,13 +208,15 @@ export const register = <S extends Models>(
     params,
     body,
     reply,
+    querystring,
     handler,
     ...fastifySchema
-  }: RouteConfig<S, M, Params, Body, Reply>): void => {
+  }: RouteConfig<S, M, Params, Body, Reply, Querystring>): void => {
     f[method]<{
       Params: SchemaTypeOption<S, Params>;
       Body: SchemaTypeOption<S, Body>;
       Reply: SchemaTypeOption<S, Reply>;
+      Querystring: SchemaTypeOption<S, Querystring>;
     }>(
       url,
       {
@@ -208,6 +226,9 @@ export const register = <S extends Models>(
             ? $ref(params as SchemaKeyOrDescription<S>)
             : undefined,
           body: body ? $ref(body as SchemaKeyOrDescription<S>) : undefined,
+          querystring: querystring
+            ? $ref(querystring as SchemaKeyOrDescription<S>)
+            : undefined,
           response: reply
             ? {
                 200: $ref(reply as SchemaKeyOrDescription<S>),
@@ -236,4 +257,6 @@ export const register = <S extends Models>(
   };
 
   f.decorate(`zod`, pluginInstance);
+
+  return f as FastifyZodInstance<S>;
 };

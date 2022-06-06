@@ -2,16 +2,9 @@ import fastify, { FastifyInstance, FastifyServerOptions } from "fastify";
 import { BadRequest, NotFound } from "http-errors";
 
 import { register } from "..";
-import { FastifyZod, RegisterOptions } from "../FastifyZod";
+import { RegisterOptions } from "../FastifyZod";
 
 import { models, TodoItems } from "./models.fixtures";
-
-// eslint-disable-next-line quotes
-declare module "fastify" {
-  interface FastifyInstance {
-    readonly zod: FastifyZod<typeof models>;
-  }
-}
 
 export const swaggerOptions: RegisterOptions<typeof models>[`swaggerOptions`] =
   {
@@ -44,9 +37,7 @@ export const createTestServer = (
   fastifyOptions: FastifyServerOptions,
   registerOptions: RegisterOptions<typeof models>,
 ): FastifyInstance => {
-  const f = fastify(fastifyOptions);
-
-  register(f, registerOptions);
+  const f = register(fastify(fastifyOptions), registerOptions);
 
   const state: TodoItems = {
     todoItems: [],

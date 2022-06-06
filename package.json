@@ -1,6 +1,6 @@
 {
   "name": "fastify-zod",
-  "version": "1.0.0-rc10",
+  "version": "1.0.0",
   "description": "Zod integration with Fastify",
   "main": "build/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "build:babel": "babel src --out-dir build --extensions '.ts' --source-maps",
     "build:openapi-spec": "node build/__tests__/generate-spec.fixtures.js",
     "build:openapi-client": "rm -rf test-openapi-client && openapi-generator-cli generate && cd test-openapi-client && npm i && cd .. && npm i file:./test-openapi-client --save-dev",
-    "build": "npm run clean && npm run build:types && npm run build:babel && npm run build:openapi-spec && npm run build:openapi-client",
+    "build": "npm run clean && npm run build:babel && npm run build:openapi-spec && npm run build:openapi-client && npm run build:types",
     "test": "jest"
   },
   "repository": {
@@ -44,6 +44,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "fastify": "^3.29.0",
     "fastify-zod-test-openapi-client": "file:test-openapi-client",
     "http-errors": "^2.0.0",
     "jest": "^28.1.0",
@@ -52,15 +53,15 @@
     "prettier": "^2.6.2",
     "typescript": "^4.7.3"
   },
+  "peerDependencies": {
+    "fastify": "^3.29.0"
+  },
   "dependencies": {
     "@fastify/swagger": "^6.1.0",
     "@openapitools/openapi-generator-cli": "^2.5.1",
-    "@types/change-case": "^2.3.1",
     "@types/js-yaml": "^4.0.5",
     "change-case": "^4.1.2",
     "fast-deep-equal": "^3.1.3",
-    "fastify": "^3.29.0",
-    "fastify-swagger": "^5.2.0",
     "js-yaml": "^4.1.0",
     "tslib": "^2.4.0",
     "typed-jest-expect": "^1.0.0",

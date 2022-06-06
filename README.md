@@ -64,16 +64,22 @@ const models = {
 };
 ```
 
-- Merge `fastify` types (as recommended by `fastify`)
+- Register `fastify` types
 
 ```ts
 import type { FastifyZod } from "fastify-zod";
 
+// Global augmentation, as suggested by
+// https://www.fastify.io/docs/latest/Reference/TypeScript/#creating-a-typescript-fastify-plugin
 declare module "fastify" {
   interface FastifyInstance {
     readonly zod: FastifyZod<typeof models>;
   }
 }
+
+// Local augmentation
+// See below for register()
+const f = register(fastify(), { jsonSchemas });
 ```
 
 - Register `fastify-zod` with optional config for `fastify-swagger`

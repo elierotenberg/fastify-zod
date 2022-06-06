@@ -7,18 +7,18 @@ export type BuildJsonSchemasOptions = {
   readonly target?: `jsonSchema7` | `openApi3`;
 };
 
-type $ref<M extends Models> = (key: SchemaKeyOrDescription<M>) => {
+type $Ref<M extends Models> = (key: SchemaKeyOrDescription<M>) => {
   readonly $ref: string;
   readonly description?: string;
 };
 
-type JsonSchema = {
+export type JsonSchema = {
   readonly $id: string;
 };
 
 export type BuildJsonSchemasResult<M extends Models> = {
   readonly schemas: JsonSchema[];
-  readonly $ref: $ref<M>;
+  readonly $ref: $Ref<M>;
 };
 
 /**
@@ -48,7 +48,7 @@ export const buildJsonSchemas = <M extends Models>(
     ...zodJsonSchema,
   };
 
-  const $ref: $ref<M> = (key) => {
+  const $ref: $Ref<M> = (key) => {
     const $ref = `${$id}#/properties/${
       typeof key === `string` ? key : key.key
     }`;
