@@ -102,9 +102,9 @@ export type FastifyZod<M extends Models> = {
   ) => void;
 };
 
-export interface FastifyZodInstance<M extends Models> extends FastifyInstance {
+export type FastifyZodInstance<M extends Models> = FastifyInstance & {
   readonly zod: FastifyZod<M>;
-}
+};
 
 export const withRefResolver = (
   options: FastifyDynamicSwaggerOptions,
