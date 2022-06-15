@@ -1,6 +1,6 @@
 {
   "name": "fastify-zod",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Zod integration with Fastify",
   "main": "build/index.js",
   "scripts": {
@@ -11,10 +11,9 @@
     "build:types": "tsc -p . --emitDeclarationOnly",
     "build:babel": "babel src --out-dir build --extensions '.ts' --source-maps",
     "build:openapi-spec": "node build/__tests__/generate-spec.fixtures.js",
-    "build:openapi-client": "rm -rf test-openapi-client && openapi-generator-cli generate && cd test-openapi-client && npm i && cd .. && npm i file:./test-openapi-client --save-dev",
+    "build:openapi-client": "rm -rf test-openapi-client && openapi-generator-cli generate && cd test-openapi-client && npm i",
     "build": "npm run clean && npm run build:babel && npm run build:openapi-spec && npm run build:openapi-client && npm run build:types",
-    "test": "jest",
-    "postinstall": "npm run build"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
