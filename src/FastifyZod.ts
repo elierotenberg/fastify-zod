@@ -6,6 +6,11 @@ import {
 } from "fastify";
 import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
 import * as yaml from "js-yaml";
+import {
+  FastifyTypeProviderDefault,
+  ResolveFastifyReplyReturnType,
+  // eslint-disable-next-line import/no-unresolved
+} from "fastify/types/type-provider";
 
 import { SpecTransformer, TransformOptions } from "./SpecTransformer";
 import { BuildJsonSchemasResult } from "./JsonSchema";
@@ -45,7 +50,16 @@ type RouteHandler<
   Querystring extends void | SchemaKey<M>,
 > = (
   params: RouteHandlerParams<M, Params, Body, Querystring>,
-) => Promise<SchemaTypeOption<M, Reply>>;
+) => ResolveFastifyReplyReturnType<
+  FastifyTypeProviderDefault,
+  FastifySchema,
+  {
+    Params: SchemaTypeOption<M, Params>;
+    Body: SchemaTypeOption<M, Body>;
+    Reply: SchemaTypeOption<M, Reply>;
+    Querystring: SchemaTypeOption<M, Querystring>;
+  }
+>;
 
 type RouteConfig<
   M extends Models = Models,

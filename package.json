@@ -44,7 +44,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "fastify": "^3.29.0",
+    "fastify": "^4.3.0",
     "fastify-zod-test-openapi-client": "file:test-openapi-client",
     "http-errors": "^2.0.0",
     "jest": "^28.1.1",
@@ -54,10 +54,10 @@
     "typescript": "^4.7.3"
   },
   "peerDependencies": {
-    "fastify": "^3.29.0"
+    "fastify": "^4.3.0"
   },
   "dependencies": {
-    "@fastify/swagger": "^6.1.0",
+    "@fastify/swagger": "^7.4.1",
     "@openapitools/openapi-generator-cli": "^2.5.1",
     "@types/js-yaml": "^4.0.5",
     "change-case": "^4.1.2",
