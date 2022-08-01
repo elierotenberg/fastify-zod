@@ -3,6 +3,7 @@ import {
   FastifyRequest,
   FastifySchema,
   HTTPMethods,
+  RouteHandlerMethod,
 } from "fastify";
 import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
 import * as yaml from "js-yaml";
@@ -118,10 +119,10 @@ export const withRefResolver = (
   },
 });
 
-export const register = <S extends Models>(
+export const register = async <S extends Models>(
   f: FastifyInstance,
   { jsonSchemas: { schemas, $ref }, swaggerOptions }: RegisterOptions<S>,
-): FastifyZodInstance<S> => {
+): Promise<FastifyZodInstance<S>> => {
   for (const schema of schemas) {
     f.addSchema(schema);
   }
@@ -129,7 +130,7 @@ export const register = <S extends Models>(
   if (swaggerOptions) {
     const { transformSpec, ...baseSwaggerOptions } = swaggerOptions;
 
-    f.register(fastifySwagger, withRefResolver(baseSwaggerOptions));
+    await f.register(fastifySwagger, withRefResolver(baseSwaggerOptions));
 
     if (transformSpec) {
       const originalRoutePrefix =
@@ -237,7 +238,7 @@ export const register = <S extends Models>(
           ...fastifySchema,
         },
       },
-      handler,
+      handler as RouteHandlerMethod,
     );
   };
 

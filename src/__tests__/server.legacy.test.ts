@@ -22,7 +22,7 @@ test(`server.legacy`, async () => {
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `body should have required property 'id'`,
+    message: `body must have required property 'id'`,
     statusCode: 400,
   });
 
@@ -33,12 +33,14 @@ test(`server.legacy`, async () => {
         url: `/item`,
         payload: {
           id: 1337,
+          label: `test item`,
+          state: `todo`,
         },
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `body.id should match format "uuid"`,
+    message: `body/id must match format "uuid"`,
     statusCode: 400,
   });
 
@@ -75,7 +77,7 @@ test(`server.legacy`, async () => {
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `params.id should match format "uuid"`,
+    message: `params/id must match format "uuid"`,
     statusCode: 400,
   });
 });

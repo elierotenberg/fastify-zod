@@ -35,8 +35,7 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
+                "$ref": "#/components/schemas/Schema/properties/TodoItemId/properties/id"
               },
               "label": {
                 "type": "string"
@@ -46,12 +45,7 @@
                 "minimum": 0
               },
               "state": {
-                "type": "string",
-                "enum": [
-                  "todo",
-                  "in progress",
-                  "done"
-                ]
+                "$ref": "#/components/schemas/Schema/properties/TodoState"
               }
             },
             "required": [
@@ -216,13 +210,13 @@
         },
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
-            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
-            }
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
           }
         ],
         "responses": {

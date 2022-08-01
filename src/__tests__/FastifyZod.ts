@@ -5,7 +5,7 @@ import { createTestServer } from "./server.fixtures";
 
 test(`FastifyZod`, async () => {
   const jsonSchemas = buildJsonSchemas(models, {});
-  const f = createTestServer(
+  const f = await createTestServer(
     {},
     {
       jsonSchemas,

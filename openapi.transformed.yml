@@ -5,17 +5,23 @@ info:
   version: 0.0.0
 components:
   schemas:
+    Schema_TodoState:
+      type: string
+      enum:
+        - todo
+        - in progress
+        - done
     Schema_TodoItem:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Schema_TodoItem_id'
+          $ref: '#/components/schemas/Schema_TodoItemId_id'
         label:
           $ref: '#/components/schemas/Schema_TodoItem_label'
         dueDateMs:
           $ref: '#/components/schemas/Schema_TodoItem_dueDateMs'
         state:
-          $ref: '#/components/schemas/Schema_TodoItem_state'
+          $ref: '#/components/schemas/Schema_TodoState'
       required:
         - id
         - label
@@ -47,7 +53,7 @@ components:
       type: number
       enum:
         - 42
-    Schema_TodoItem_id:
+    Schema_TodoItemId_id:
       type: string
       format: uuid
     Schema_TodoItem_label:
@@ -55,12 +61,6 @@ components:
     Schema_TodoItem_dueDateMs:
       type: integer
       minimum: 0
-    Schema_TodoItem_state:
-      type: string
-      enum:
-        - todo
-        - in progress
-        - done
     Schema_TodoItems_todoItems:
       type: array
       items:
@@ -132,12 +132,12 @@ paths:
             schema:
               $ref: '#/components/schemas/Schema_TodoItem'
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
+        - schema:
             type: string
             format: uuid
+          in: path
+          name: id
+          required: true
       responses:
         '200':
           description: Default Response

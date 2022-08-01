@@ -79,7 +79,7 @@ declare module "fastify" {
 
 // Local augmentation
 // See below for register()
-const f = register(fastify(), { jsonSchemas });
+const f = await register(fastify(), { jsonSchemas });
 ```
 
 - Register `fastify-zod` with optional config for `fastify-swagger`
@@ -89,7 +89,7 @@ import { buildJsonSchemas, register } from "fastify-zod";
 
 const f = fastify();
 
-register(f, {
+await register(f, {
   jsonSchemas: buildJsonSchemas(models),
   // optional, see below
   swagger: {
@@ -222,7 +222,7 @@ Any options will be passed directly to `fastify-swagger` so you may refer to [th
 In addition to `fastify-swagger` options, you can pass an additional property, `transformSpec`, to expose a transformed version of the original spec (see below).
 
 ```ts
-register(f, {
+await register(f, {
   jsonSchemas: buildJsonSchemas(models),
   swaggerOptions: {
     routePrefix: `/swagger`,
@@ -586,7 +586,7 @@ For this you need to first generate the spec file, then run `openapitools-genera
 ```ts
 const jsonSchemas = buildJsonSchemas(models);
 
-register(f, {
+await register(f, {
   jsonSchemas,
   swaggerOptions: {
     openapi: {

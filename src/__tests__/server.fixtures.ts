@@ -33,11 +33,11 @@ export const openApiOptions: RegisterOptions<typeof models>[`swaggerOptions`] =
     exposeRoute: true,
   };
 
-export const createTestServer = (
+export const createTestServer = async (
   fastifyOptions: FastifyServerOptions,
   registerOptions: RegisterOptions<typeof models>,
-): FastifyInstance => {
-  const f = register(fastify(fastifyOptions), registerOptions);
+): Promise<FastifyInstance> => {
+  const f = await register(fastify(fastifyOptions), registerOptions);
 
   const state: TodoItems = {
     todoItems: [],

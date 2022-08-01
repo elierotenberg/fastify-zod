@@ -97,7 +97,7 @@ test(`fix #14, #17`, async () => {
 
   const jsonSchemas = buildJsonSchemas({ UserDetails, Unknown }, {});
 
-  const f = register(fastify(), {
+  const f = await register(fastify(), {
     jsonSchemas,
   });
 
@@ -117,7 +117,7 @@ test(`fix #14, #17`, async () => {
 
   expect(name).toEqual({
     error: `Bad Request`,
-    message: `querystring should have required property 'name', querystring.kind should be equal to constant, querystring should match some schema in anyOf`,
+    message: `querystring must have required property 'name', querystring must have required property 'street', querystring must match a schema in anyOf`,
     statusCode: 400,
   });
 
@@ -127,7 +127,7 @@ test(`fix #14, #17`, async () => {
 
   expect(address).toEqual({
     error: `Bad Request`,
-    message: `querystring.kind should be equal to constant, querystring should have required property 'street', querystring should match some schema in anyOf`,
+    message: `querystring must have required property 'name', querystring must have required property 'street', querystring must match a schema in anyOf`,
     statusCode: 400,
   });
 });

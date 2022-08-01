@@ -7,11 +7,19 @@
   },
   "components": {
     "schemas": {
+      "Schema_TodoState": {
+        "type": "string",
+        "enum": [
+          "todo",
+          "in progress",
+          "done"
+        ]
+      },
       "Schema_TodoItem": {
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/Schema_TodoItem_id"
+            "$ref": "#/components/schemas/Schema_TodoItemId_id"
           },
           "label": {
             "$ref": "#/components/schemas/Schema_TodoItem_label"
@@ -20,7 +28,7 @@
             "$ref": "#/components/schemas/Schema_TodoItem_dueDateMs"
           },
           "state": {
-            "$ref": "#/components/schemas/Schema_TodoItem_state"
+            "$ref": "#/components/schemas/Schema_TodoState"
           }
         },
         "required": [
@@ -68,7 +76,7 @@
           42
         ]
       },
-      "Schema_TodoItem_id": {
+      "Schema_TodoItemId_id": {
         "type": "string",
         "format": "uuid"
       },
@@ -78,14 +86,6 @@
       "Schema_TodoItem_dueDateMs": {
         "type": "integer",
         "minimum": 0
-      },
-      "Schema_TodoItem_state": {
-        "type": "string",
-        "enum": [
-          "todo",
-          "in progress",
-          "done"
-        ]
       },
       "Schema_TodoItems_todoItems": {
         "type": "array",
@@ -205,13 +205,13 @@
         },
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
-            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
-            }
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
           }
         ],
         "responses": {

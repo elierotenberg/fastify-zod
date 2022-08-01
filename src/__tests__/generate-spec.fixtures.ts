@@ -7,7 +7,7 @@ import { models } from "./models.fixtures";
 import { createTestServer, openApiOptions } from "./server.fixtures";
 
 const main = async (): Promise<void> => {
-  const f = createTestServer(
+  const f = await createTestServer(
     {},
     {
       jsonSchemas: buildJsonSchemas(models, {}),
