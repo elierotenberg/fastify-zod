@@ -2,7 +2,7 @@ import {
   FastifyInstance,
   FastifyRequest,
   FastifySchema,
-  HTTPMethods,
+  HTTPMethods as FastifyHTTPMethods,
   RouteHandlerMethod,
 } from "fastify";
 import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
@@ -27,6 +27,9 @@ export type RegisterOptions<S extends Models> = {
     };
   };
 };
+
+type HTTPMethods = Lowercase<FastifyHTTPMethods> & keyof FastifyInstance;
+
 type RouteHandlerParams<
   M extends Models,
   Params extends void | SchemaKey<M>,
@@ -50,7 +53,7 @@ type RouteHandler<
 
 type RouteConfig<
   M extends Models = Models,
-  Method extends Lowercase<HTTPMethods> = Lowercase<HTTPMethods>,
+  Method extends HTTPMethods = HTTPMethods,
   Params extends void | SchemaKey<M> = void,
   Body extends void | SchemaKey<M> = void,
   Reply extends void | SchemaKey<M> = void,
@@ -88,7 +91,7 @@ type RouteConfig<
 } & FastifySchema;
 
 export type FastifyZod<M extends Models> = {
-  readonly [Method in Lowercase<HTTPMethods>]: <
+  readonly [Method in HTTPMethods]: <
     Params extends void | SchemaKey<M> = void,
     Body extends void | SchemaKey<M> = void,
     Reply extends void | SchemaKey<M> = void,
@@ -197,7 +200,7 @@ export const register = async <S extends Models>(
   }
 
   const addRoute = <
-    M extends Lowercase<HTTPMethods> = Lowercase<HTTPMethods>,
+    Method extends HTTPMethods = HTTPMethods,
     Params extends void | SchemaKey<S> = void,
     Body extends void | SchemaKey<S> = void,
     Reply extends void | SchemaKey<S> = void,
@@ -212,7 +215,7 @@ export const register = async <S extends Models>(
     querystring,
     handler,
     ...fastifySchema
-  }: RouteConfig<S, M, Params, Body, Reply, Querystring>): void => {
+  }: RouteConfig<S, Method, Params, Body, Reply, Querystring>): void => {
     f[method]<{
       Params: SchemaTypeOption<S, Params>;
       Body: SchemaTypeOption<S, Body>;
@@ -243,7 +246,7 @@ export const register = async <S extends Models>(
   };
 
   const createAddRoute =
-    <M extends Lowercase<HTTPMethods>>(method: M): FastifyZod<S>[M] =>
+    <Method extends HTTPMethods>(method: Method): FastifyZod<S>[Method] =>
     (url, config, handler) =>
       addRoute({ url, handler, method, ...config });
 
