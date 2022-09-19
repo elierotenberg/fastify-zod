@@ -35,6 +35,7 @@
     "@babel/core": "^7.19.0",
     "@babel/preset-env": "^7.19.0",
     "@babel/preset-typescript": "^7.18.6",
+    "@openapitools/openapi-generator-cli": "^2.5.2",
     "@types/http-errors": "^1.8.2",
     "@types/jest": "^29.0.2",
     "@types/node": "^18.7.18",
@@ -59,7 +60,6 @@
   },
   "dependencies": {
     "@fastify/swagger": "^7.5.1",
-    "@openapitools/openapi-generator-cli": "^2.5.2",
     "@types/js-yaml": "^4.0.5",
     "change-case": "^4.1.2",
     "fast-deep-equal": "^3.1.3",
