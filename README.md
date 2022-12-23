@@ -22,7 +22,7 @@ Unfortunately, `fastify` and `zod` don't work together very well. [`fastify` sug
 - Install `fastify-zod`
 
 ```
-npm i fastify-zod`
+npm i fastify-zod
 ```
 
 - Define your models using `zod`
