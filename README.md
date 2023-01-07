@@ -622,4 +622,4 @@ Unfortunately and despite best efforts by `SpecTransformer`, the OpenAPI generat
 
 ## License
 
-MIT License Copyright (c) 2022 Elie Rotenberg
+MIT License Copyright (c) 2023 Elie Rotenberg
