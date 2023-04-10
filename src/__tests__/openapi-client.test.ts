@@ -8,17 +8,22 @@ import {
 import { buildJsonSchemas } from "..";
 
 import { models } from "./models.fixtures";
-import { createTestServer, openApiOptions } from "./server.fixtures";
+import {
+  createTestServer,
+  openApiOptions,
+  swaggerUiOptions,
+} from "./server.fixtures";
 
 test(`openapi-client`, async () => {
   const f = await createTestServer(
     {},
     {
       jsonSchemas: buildJsonSchemas(models, {}),
+      transformSpec: {},
       swaggerOptions: {
         ...openApiOptions,
-        transformSpec: {},
       },
+      swaggerUiOptions,
     },
   );
 
@@ -26,7 +31,7 @@ test(`openapi-client`, async () => {
 
   try {
     const client = new DefaultApi(
-      new Configuration({ basePath, fetchApi: require(`node-fetch`) }),
+      new Configuration({ basePath, fetchApi: global.fetch }),
     );
 
     await tExpect(client.getTodoItems()).resolves.toEqual({ todoItems: [] });

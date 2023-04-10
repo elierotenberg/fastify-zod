@@ -8,7 +8,6 @@ import { models, TodoItems } from "./models.fixtures";
 
 export const swaggerOptions: RegisterOptions<typeof models>[`swaggerOptions`] =
   {
-    routePrefix: `/swagger`,
     swagger: {
       info: {
         title: `Fastify Zod Test Server`,
@@ -16,8 +15,6 @@ export const swaggerOptions: RegisterOptions<typeof models>[`swaggerOptions`] =
         version: `0.0.0`,
       },
     },
-    staticCSP: true,
-    exposeRoute: true,
   };
 
 export const openApiOptions: RegisterOptions<typeof models>[`swaggerOptions`] =
@@ -29,9 +26,13 @@ export const openApiOptions: RegisterOptions<typeof models>[`swaggerOptions`] =
         version: `0.0.0`,
       },
     },
-    staticCSP: true,
-    exposeRoute: true,
   };
+
+export const swaggerUiOptions: RegisterOptions<
+  typeof models
+>[`swaggerUiOptions`] = {
+  staticCSP: true,
+};
 
 export const createTestServer = async (
   fastifyOptions: FastifyServerOptions,

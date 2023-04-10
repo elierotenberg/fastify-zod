@@ -37,7 +37,14 @@ export const helpers = (
       target,
     };
   }
-  return helpers(`jsonSchema7`);
+  return {
+    $schema: {},
+    constOrEnum: (value) => ({ const: value }),
+    stringEnum: (values) => ({
+      type: `string`,
+      enum: values,
+    }),
+  };
 };
 
 describe(`buildJsonSchemas`, () => {
