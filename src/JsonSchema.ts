@@ -5,6 +5,7 @@ import { Models, SchemaKeyOrDescription } from "./Models";
 export type BuildJsonSchemasOptions = {
   readonly $id?: string;
   readonly target?: `jsonSchema7` | `openApi3`;
+  readonly errorMessages?: boolean;
 };
 
 export type $Ref<M extends Models> = (key: SchemaKeyOrDescription<M>) => {
@@ -41,6 +42,7 @@ export const buildJsonSchemas = <M extends Models>(
   const zodJsonSchema = zodToJsonSchema(zodSchema, {
     target: opts.target,
     basePath: [`${$id}#`],
+    errorMessages: opts.errorMessages,
   });
 
   const jsonSchema: JsonSchema = {

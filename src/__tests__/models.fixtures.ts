@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const TodoItemId = z.object({
-  id: z.string().uuid(),
+  id: z.string().uuid(`invalid todo item id`),
 });
 export type TodoItemId = z.infer<typeof TodoItemId>;
 

@@ -4,9 +4,16 @@ import { models } from "./models.fixtures";
 import { createTestServer } from "./server.fixtures";
 
 test(`FastifyZod`, async () => {
-  const jsonSchemas = buildJsonSchemas(models, {});
+  const jsonSchemas = buildJsonSchemas(models, { errorMessages: true });
   const f = await createTestServer(
-    {},
+    {
+      ajv: {
+        customOptions: {
+          allErrors: true,
+        },
+        plugins: [require(`ajv-errors`)],
+      },
+    },
     {
       jsonSchemas,
       transformSpec: {
@@ -36,7 +43,7 @@ test(`FastifyZod`, async () => {
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `body must have required property 'id'`,
+    message: `body must have required property 'id', body must have required property 'label', body must have required property 'state'`,
     statusCode: 400,
   });
 
@@ -54,7 +61,7 @@ test(`FastifyZod`, async () => {
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `body/id must match format "uuid"`,
+    message: `body/id invalid todo item id`,
     statusCode: 400,
   });
 
@@ -129,7 +136,7 @@ test(`FastifyZod`, async () => {
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `params/id must match format "uuid"`,
+    message: `params/id invalid todo item id`,
     statusCode: 400,
   });
 });

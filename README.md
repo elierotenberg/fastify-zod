@@ -171,6 +171,29 @@ f.zod.get(
 );
 ```
 
+- For custom error messages, you must enable error messages when building the schemas, as well as [configuring fastify to handle them](https://www.fastify.io/docs/latest/Reference/Validation-and-Serialization/#schemaerrorformatter):
+
+```ts
+// Define custom messages
+const TodoItemId = z.object({
+  id: z.string().uuid("this is not a valid id!"),
+});
+
+// Then configure fastify
+const f = fastify({
+  ajv: {
+    customOptions: {
+      allErrors: true,
+    },
+  },
+  plugins: [require("ajv-errors")],
+});
+
+await register(f, {
+  jsonSchemas: buildJsonSchemas(models, { errorMessages: true }),
+});
+```
+
 ## API
 
 ### `buildJsonSchemas(models: Models, options: BuildJsonSchemasOptions = {}): BuildJonSchemaResult<typeof models>`
