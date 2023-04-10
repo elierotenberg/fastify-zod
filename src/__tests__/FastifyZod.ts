@@ -9,11 +9,9 @@ test(`FastifyZod`, async () => {
     {},
     {
       jsonSchemas,
-      swaggerOptions: {
-        transformSpec: {
-          options: {
-            mergeRefs: [jsonSchemas.$ref(`TodoState`)],
-          },
+      transformSpec: {
+        options: {
+          mergeRefs: [jsonSchemas.$ref(`TodoState`)],
         },
       },
     },

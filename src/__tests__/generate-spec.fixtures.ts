@@ -4,17 +4,22 @@ import { join } from "path";
 import { buildJsonSchemas } from "..";
 
 import { models } from "./models.fixtures";
-import { createTestServer, openApiOptions } from "./server.fixtures";
+import {
+  createTestServer,
+  openApiOptions,
+  swaggerUiOptions,
+} from "./server.fixtures";
 
 const main = async (): Promise<void> => {
   const f = await createTestServer(
     {},
     {
       jsonSchemas: buildJsonSchemas(models, {}),
+      transformSpec: { options: {} },
       swaggerOptions: {
         ...openApiOptions,
-        transformSpec: { options: {} },
       },
+      swaggerUiOptions,
     },
   );
 

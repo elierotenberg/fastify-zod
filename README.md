@@ -91,14 +91,13 @@ const f = fastify();
 
 await register(f, {
   jsonSchemas: buildJsonSchemas(models),
-  // optional, see below
-  swagger: {
-    openapi: {
-      /* ... */
-    },
-    exposeRoute: true,
-    transformSpec: {}, // optional, see below
+  swaggerOptions: {
+    // See https://github.com/fastify/fastify-swagger
   },
+  swaggerUiOptions: {
+    // See https://github.com/fastify/fastify-swagger-ui
+  },
+  transformSpec: {}, // optional, see below
 });
 ```
 
@@ -225,7 +224,6 @@ In addition to `fastify-swagger` options, you can pass an additional property, `
 await register(f, {
   jsonSchemas: buildJsonSchemas(models),
   swaggerOptions: {
-    routePrefix: `/swagger`,
     swagger: {
       info: {
         title: `Fastify Zod Test Server`,
@@ -233,11 +231,13 @@ await register(f, {
         version: `0.0.0`,
       },
     },
+  },
+  swaggerUiOptions: {
+    routePrefix: `/swagger`,
     staticCSP: true,
-    exposeRoute: true,
-    transformSpec: {
-      /* see below */
-    },
+  },
+  transformSpec: {
+    /* see below */
   },
 });
 ```
@@ -622,4 +622,4 @@ Unfortunately and despite best efforts by `SpecTransformer`, the OpenAPI generat
 
 ## License
 
-MIT License Copyright (c) 2022 Elie Rotenberg
+MIT License Copyright (c) Elie Rotenberg

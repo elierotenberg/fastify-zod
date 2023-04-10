@@ -6,6 +6,7 @@ import {
   RouteHandlerMethod,
 } from "fastify";
 import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
+import fastifySwaggerUi, { FastifySwaggerUiOptions } from "@fastify/swagger-ui";
 import * as yaml from "js-yaml";
 
 import { SpecTransformer, TransformOptions } from "./SpecTransformer";
@@ -19,13 +20,13 @@ import {
 
 export type RegisterOptions<S extends Models> = {
   readonly jsonSchemas: BuildJsonSchemasResult<S>;
-  readonly swaggerOptions?: FastifyDynamicSwaggerOptions & {
-    readonly transformSpec?: {
-      readonly cache?: boolean;
-      readonly routePrefix?: string;
-      readonly options?: TransformOptions;
-    };
+  readonly transformSpec?: {
+    readonly cache?: boolean;
+    readonly routePrefix?: string;
+    readonly options?: TransformOptions;
   };
+  readonly swaggerOptions?: FastifyDynamicSwaggerOptions;
+  readonly swaggerUiOptions?: false | FastifySwaggerUiOptions;
 };
 
 type HTTPMethods = Lowercase<FastifyHTTPMethods> & keyof FastifyInstance;
@@ -124,20 +125,23 @@ export const withRefResolver = (
 
 export const register = async <S extends Models>(
   f: FastifyInstance,
-  { jsonSchemas: { schemas, $ref }, swaggerOptions }: RegisterOptions<S>,
+  {
+    jsonSchemas: { schemas, $ref },
+    swaggerOptions,
+    swaggerUiOptions,
+    transformSpec,
+  }: RegisterOptions<S>,
 ): Promise<FastifyZodInstance<S>> => {
   for (const schema of schemas) {
     f.addSchema(schema);
   }
-
-  if (swaggerOptions) {
-    const { transformSpec, ...baseSwaggerOptions } = swaggerOptions;
-
-    await f.register(fastifySwagger, withRefResolver(baseSwaggerOptions));
+  await f.register(fastifySwagger, withRefResolver(swaggerOptions ?? {}));
+  if (swaggerUiOptions !== false) {
+    await f.register(fastifySwaggerUi, swaggerUiOptions ?? {});
 
     if (transformSpec) {
       const originalRoutePrefix =
-        baseSwaggerOptions.routePrefix ?? `/documentation`;
+        swaggerUiOptions?.routePrefix ?? `/documentation`;
       const transformedRoutePrefix =
         transformSpec.routePrefix ?? `${originalRoutePrefix}_transformed`;
 
@@ -145,7 +149,7 @@ export const register = async <S extends Models>(
         const originalSpec = await f
           .inject({
             method: `get`,
-            url: `${baseSwaggerOptions.routePrefix ?? `documentation`}/json`,
+            url: `${swaggerUiOptions?.routePrefix ?? `documentation`}/json`,
           })
           .then((res) => res.json());
         const t = new SpecTransformer(originalSpec);
@@ -216,6 +220,25 @@ export const register = async <S extends Models>(
     handler,
     ...fastifySchema
   }: RouteConfig<S, Method, Params, Body, Reply, Querystring>): void => {
+    const customSchema: FastifySchema = {};
+    if (operationId) {
+      customSchema.operationId = operationId;
+    }
+    if (params) {
+      customSchema.params = $ref(params as SchemaKeyOrDescription<S>);
+    }
+    if (body) {
+      customSchema.body = $ref(body as SchemaKeyOrDescription<S>);
+    }
+    if (querystring) {
+      customSchema.querystring = $ref(querystring as SchemaKeyOrDescription<S>);
+    }
+    if (reply) {
+      customSchema.response = {
+        200: $ref(reply as SchemaKeyOrDescription<S>),
+      };
+    }
+
     f[method]<{
       Params: SchemaTypeOption<S, Params>;
       Body: SchemaTypeOption<S, Body>;
@@ -225,19 +248,7 @@ export const register = async <S extends Models>(
       url,
       {
         schema: {
-          operationId,
-          params: params
-            ? $ref(params as SchemaKeyOrDescription<S>)
-            : undefined,
-          body: body ? $ref(body as SchemaKeyOrDescription<S>) : undefined,
-          querystring: querystring
-            ? $ref(querystring as SchemaKeyOrDescription<S>)
-            : undefined,
-          response: reply
-            ? {
-                200: $ref(reply as SchemaKeyOrDescription<S>),
-              }
-            : undefined,
+          ...customSchema,
           ...fastifySchema,
         },
       },
