@@ -21,6 +21,10 @@ const TodoItem = TodoItemId.extend({
 
 export type TodoItem = z.infer<typeof TodoItem>;
 
+const TodoItemNotFoundError = TodoItemId.extend({
+  message: z.literal(`item not found`),
+});
+
 const TodoItems = z.object({
   todoItems: z.array(TodoItem),
 });
@@ -41,6 +45,7 @@ export const models = {
   TodoState,
   TodoItemId,
   TodoItem,
+  TodoItemNotFoundError,
   TodoItems,
   TodoItemsGroupedByStatus,
   FortyTwo,

@@ -36,7 +36,7 @@ test(`FastifyZod`, async () => {
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `body should have required property 'id'`,
+    message: `body must have required property 'id'`,
     statusCode: 400,
   });
 
@@ -47,13 +47,33 @@ test(`FastifyZod`, async () => {
         url: `/item`,
         payload: {
           id: 1337,
+          label: `todo`,
+          state: `todo`,
         },
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `body.id should match format "uuid"`,
+    message: `body/id must match format "uuid"`,
     statusCode: 400,
+  });
+
+  await expect(
+    f
+      .inject({
+        method: `get`,
+        url: `/item/e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
+      })
+      .then(async (response) => ({
+        statusCode: response.statusCode,
+        body: await response.json(),
+      })),
+  ).resolves.toEqual({
+    statusCode: 404,
+    body: {
+      id: `e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
+      message: `item not found`,
+    },
   });
 
   await expect(
@@ -83,13 +103,33 @@ test(`FastifyZod`, async () => {
   await expect(
     f
       .inject({
+        method: `get`,
+        url: `/item/e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
+      })
+      .then(async (response) => ({
+        statusCode: response.statusCode,
+        body: await response.json(),
+      })),
+  ).resolves.toEqual({
+    statusCode: 200,
+    body: {
+      id: `e7f7082a-4f16-430d-8c3b-db6b8d4d3e73`,
+      label: `todo`,
+      state: `todo`,
+      dueDateMs: new Date(1337).getTime(),
+    },
+  });
+
+  await expect(
+    f
+      .inject({
         method: `put`,
         url: `/item/1337`,
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
     error: `Bad Request`,
-    message: `params.id should match format "uuid"`,
+    message: `params/id must match format "uuid"`,
     statusCode: 400,
   });
 });

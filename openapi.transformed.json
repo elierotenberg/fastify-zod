@@ -38,6 +38,22 @@
         ],
         "additionalProperties": false
       },
+      "Schema_TodoItemNotFoundError": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Schema_TodoItemId_id"
+          },
+          "message": {
+            "$ref": "#/components/schemas/Schema_TodoItemNotFoundError_message"
+          }
+        },
+        "required": [
+          "id",
+          "message"
+        ],
+        "additionalProperties": false
+      },
       "Schema_TodoItems": {
         "type": "object",
         "properties": {
@@ -86,6 +102,12 @@
       "Schema_TodoItem_dueDateMs": {
         "type": "integer",
         "minimum": 0
+      },
+      "Schema_TodoItemNotFoundError_message": {
+        "type": "string",
+        "enum": [
+          "item not found"
+        ]
       },
       "Schema_TodoItems_todoItems": {
         "type": "array",
@@ -192,6 +214,42 @@
       }
     },
     "/item/{id}": {
+      "get": {
+        "operationId": "getTodoItem",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema_TodoItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema_TodoItemNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "operationId": "putTodoItem",
         "requestBody": {

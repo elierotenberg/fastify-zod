@@ -7,7 +7,7 @@ export type BuildJsonSchemasOptions = {
   readonly target?: `jsonSchema7` | `openApi3`;
 };
 
-type $Ref<M extends Models> = (key: SchemaKeyOrDescription<M>) => {
+export type $Ref<M extends Models> = (key: SchemaKeyOrDescription<M>) => {
   readonly $ref: string;
   readonly description?: string;
 };

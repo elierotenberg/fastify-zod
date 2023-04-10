@@ -55,6 +55,25 @@
             ],
             "additionalProperties": false
           },
+          "TodoItemNotFoundError": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Schema/properties/TodoItemId/properties/id"
+              },
+              "message": {
+                "type": "string",
+                "enum": [
+                  "item not found"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "message"
+            ],
+            "additionalProperties": false
+          },
           "TodoItems": {
             "type": "object",
             "properties": {
@@ -110,6 +129,7 @@
           "TodoState",
           "TodoItemId",
           "TodoItem",
+          "TodoItemNotFoundError",
           "TodoItems",
           "TodoItemsGroupedByStatus",
           "FortyTwo"
@@ -197,6 +217,42 @@
       }
     },
     "/item/{id}": {
+      "get": {
+        "operationId": "getTodoItem",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema/properties/TodoItem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schema/properties/TodoItemNotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "operationId": "putTodoItem",
         "requestBody": {

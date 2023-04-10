@@ -144,6 +144,33 @@ await writeFile(
 
 `openapi-generator-cli generate`
 
+- For multiple response types / status codes, use `response` instead of `reply`:
+
+```ts
+f.zod.get(
+  `/item/:id`,
+  {
+    operationId: `getTodoItem`,
+    params: `TodoItemId`,
+    response: {
+      200: `TodoItem`,
+      404: `TodoItemNotFoundError`,
+    },
+  },
+  async ({ params: { id } }, reply) => {
+    const item = state.todoItems.find((item) => item.id === id);
+    if (item) {
+      return item;
+    }
+    reply.code(404);
+    return {
+      id,
+      message: `item not found`,
+    };
+  }
+);
+```
+
 ## API
 
 ### `buildJsonSchemas(models: Models, options: BuildJsonSchemasOptions = {}): BuildJonSchemaResult<typeof models>`
