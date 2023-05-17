@@ -274,6 +274,7 @@ export const register = async <M extends M_>(
     response,
     querystring,
     handler,
+    nativeRouteOptions,
     hide,
     deprecated,
     tags,
@@ -283,7 +284,6 @@ export const register = async <M extends M_>(
     produces,
     externalDocs,
     security,
-    nativeRouteOptions,
   }: RouteConfig<M, V, P, B, Q, R, Rx>): void => {
     const customSchema: FastifySchema = {};
     if (operationId) {

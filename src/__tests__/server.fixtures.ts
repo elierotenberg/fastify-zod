@@ -139,18 +139,16 @@ export const createTestServer = async (
     `/native-options`,
     {
       operationId: `nativeOptions`,
-      response: {
-        418: `Teapot`,
-      },
       nativeRouteOptions: {
         preHandler: [
-          (_, res) => {
+          (_, res, next) => {
             res.code(418);
+            next();
           },
         ],
       },
     },
-    async () => `Oh, it's Teatime`,
+    async (_, res) => res.send(),
   );
 
   return f;

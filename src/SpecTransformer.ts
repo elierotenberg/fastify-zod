@@ -12,7 +12,7 @@ import {
   matchPathPrefix,
   replacePathPrefix,
   setAtPath,
-} from "./Path";
+} from "./SchemaPath";
 import { findFirstDeep, isRecord, visitDeep } from "./util";
 
 type Ref = {

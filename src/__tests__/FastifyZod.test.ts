@@ -1,3 +1,5 @@
+import { log } from "console";
+
 import { buildJsonSchemas } from "../JsonSchema";
 
 import { models } from "./models.fixtures";
@@ -139,4 +141,13 @@ test(`FastifyZod`, async () => {
     message: `params/id invalid todo item id`,
     statusCode: 400,
   });
+
+  await expect(
+    f
+      .inject({
+        method: `get`,
+        url: `/native-options`,
+      })
+      .then((res) => res.statusCode),
+  ).resolves.toEqual(418);
 });

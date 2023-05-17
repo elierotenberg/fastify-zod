@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: `node`,
-  testMatch: [`**/*.test.js`],
+  testMatch: [`**/*.test.ts`],
   maxConcurrency: 30,
   testTimeout: 240000,
 };
