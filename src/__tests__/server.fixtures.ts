@@ -135,5 +135,23 @@ export const createTestServer = async (
     async () => 42,
   );
 
+  f.zod.get(
+    `/native-options`,
+    {
+      operationId: `nativeOptions`,
+      response: {
+        418: `Teapot`,
+      },
+      nativeRouteOptions: {
+        preHandler: [
+          (_, res) => {
+            res.code(418);
+          },
+        ],
+      },
+    },
+    async () => `Oh, it's Teatime`,
+  );
+
   return f;
 };

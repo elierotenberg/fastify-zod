@@ -8,6 +8,7 @@ import {
   RouteHandlerMethod,
   FastifyReply,
   RawServerBase,
+  RouteShorthandOptions,
 } from "fastify";
 import fastifySwagger, { FastifyDynamicSwaggerOptions } from "@fastify/swagger";
 import fastifySwaggerUi, { FastifySwaggerUiOptions } from "@fastify/swagger-ui";
@@ -137,6 +138,10 @@ type RouteConfig<
       }
     : void;
   readonly handler: RouteHandler<M, P, B, Q, R, Rx>;
+  nativeRouteOptions?: Omit<
+    RouteShorthandOptions,
+    `schema` | `attachValidation` | `validatorCompiler` | `serializerCompiler`
+  >;
 } & FastifySchema;
 
 export type FastifyZod<M extends M_> = {
@@ -269,7 +274,16 @@ export const register = async <M extends M_>(
     response,
     querystring,
     handler,
-    ...fastifySchema
+    hide,
+    deprecated,
+    tags,
+    description,
+    summary,
+    consumes,
+    produces,
+    externalDocs,
+    security,
+    nativeRouteOptions,
   }: RouteConfig<M, V, P, B, Q, R, Rx>): void => {
     const customSchema: FastifySchema = {};
     if (operationId) {
@@ -312,8 +326,17 @@ export const register = async <M extends M_>(
       {
         schema: {
           ...customSchema,
-          ...fastifySchema,
+          hide,
+          deprecated,
+          tags,
+          description,
+          summary,
+          consumes,
+          produces,
+          externalDocs,
+          security,
         },
+        ...nativeRouteOptions,
       },
       handler as RouteHandlerMethod,
     );

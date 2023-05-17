@@ -41,6 +41,9 @@ export type TodoItemsGroupedByStatus = z.infer<typeof TodoItemsGroupedByStatus>;
 const FortyTwo = z.literal(42);
 export type FortyTwo = z.infer<typeof FortyTwo>;
 
+const Teapot = z.literal(`Oh, it's Teatime`);
+export type Teapot = z.infer<typeof Teapot>;
+
 export const models = {
   TodoState,
   TodoItemId,
@@ -49,4 +52,5 @@ export const models = {
   TodoItems,
   TodoItemsGroupedByStatus,
   FortyTwo,
+  Teapot,
 };
