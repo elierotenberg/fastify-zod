@@ -42,6 +42,7 @@ test(`FastifyZod`, async () => {
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `body must have required property 'id', body must have required property 'label', body must have required property 'state'`,
     statusCode: 400,
@@ -60,6 +61,7 @@ test(`FastifyZod`, async () => {
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `body/id invalid todo item id`,
     statusCode: 400,
@@ -135,6 +137,7 @@ test(`FastifyZod`, async () => {
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `params/id invalid todo item id`,
     statusCode: 400,
