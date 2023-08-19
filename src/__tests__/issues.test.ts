@@ -116,6 +116,7 @@ test(`fix #14, #17`, async () => {
     .then((res) => res.json());
 
   expect(name).toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `querystring must have required property 'name', querystring must have required property 'street', querystring must match a schema in anyOf`,
     statusCode: 400,
@@ -126,6 +127,7 @@ test(`fix #14, #17`, async () => {
     .then((res) => res.json());
 
   expect(address).toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `querystring must have required property 'name', querystring must have required property 'street', querystring must match a schema in anyOf`,
     statusCode: 400,

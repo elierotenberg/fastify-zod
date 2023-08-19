@@ -21,6 +21,7 @@ test(`server.legacy`, async () => {
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `body must have required property 'id'`,
     statusCode: 400,
@@ -39,6 +40,7 @@ test(`server.legacy`, async () => {
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `body/id must match format "uuid"`,
     statusCode: 400,
@@ -76,6 +78,7 @@ test(`server.legacy`, async () => {
       })
       .then((res) => res.json()),
   ).resolves.toEqual({
+    code: `FST_ERR_VALIDATION`,
     error: `Bad Request`,
     message: `params/id must match format "uuid"`,
     statusCode: 400,
