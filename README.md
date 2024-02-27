@@ -11,9 +11,9 @@ Unfortunately, `fastify` and `zod` don't work together very well. [`fastify` sug
 ## Features
 
 - Define your models using `zod` in a single place, without redundancy / conflicting sources of truth
-- Use your models in busines logic code and get out of the box type-safety in `fastify`
-- First-class support for `fastify-swagger` and `openapitools-generator/typescrip-fetch`
-- Referential transparency, including for `enum`s
+- Use your models in business logic code and get out of the box type-safety in `fastify`
+- First-class support for `fastify-swagger` and `openapitools-generator/typescript-fetch`
+- Referential transparency, including for `enum`
 - Deduplication of structurally equivalent models
 - Internal generated JSON Schemas available for reuse
 
