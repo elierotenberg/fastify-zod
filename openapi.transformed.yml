@@ -192,3 +192,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Schema_FortyTwo'
+  /native-options:
+    get:
+      operationId: nativeOptions
+      responses:
+        '200':
+          description: Default Response

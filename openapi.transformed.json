@@ -302,6 +302,16 @@
           }
         }
       }
+    },
+    "/native-options": {
+      "get": {
+        "operationId": "nativeOptions",
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
     }
   }
 }

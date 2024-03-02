@@ -123,6 +123,12 @@
             "enum": [
               42
             ]
+          },
+          "Teapot": {
+            "type": "string",
+            "enum": [
+              "Oh, it's Teatime"
+            ]
           }
         },
         "required": [
@@ -132,7 +138,8 @@
           "TodoItemNotFoundError",
           "TodoItems",
           "TodoItemsGroupedByStatus",
-          "FortyTwo"
+          "FortyTwo",
+          "Teapot"
         ],
         "additionalProperties": false
       }
@@ -302,6 +309,16 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/native-options": {
+      "get": {
+        "operationId": "nativeOptions",
+        "responses": {
+          "200": {
+            "description": "Default Response"
           }
         }
       }
