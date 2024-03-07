@@ -230,6 +230,10 @@ const models = {
 
 Generates either `jsonSchema7` or `openApi3` schema. See [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema#options-object).
 
+##### `BuildJsonSchemasOptions.refStrategy: `jsonSchema7`|`openApi3` = "jsonSchema7"`: _jsonSchema7_ (default) or _openApi3_
+
+Uses either `root`, `relative` or `none` (default `root`) for the reference builder strategy. See [`zod-to-json-schema`](https://github.com/StefanTerdell/zod-to-json-schema#options-object) options object (`$refStrategy?`) for more information.
+
 #### `BuildJsonSchemasResult<typeof models> = { schemas: JsonSchema[], $ref: $ref<typeof models> }`
 
 The result of `buildJsonSchemas` has 2 components: an array of schemas that can be added directly to fastify using `fastify.addSchema`, and a `$ref` function that returns a `{ $ref: string }` object that can be used directly.

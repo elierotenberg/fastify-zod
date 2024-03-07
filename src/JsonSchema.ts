@@ -6,6 +6,7 @@ export type BuildJsonSchemasOptions = {
   readonly $id?: string;
   readonly target?: `jsonSchema7` | `openApi3`;
   readonly errorMessages?: boolean;
+  readonly refStrategy?: `root` | `relative` | `none`;
 };
 
 export type $Ref<M extends Models> = (key: SchemaKeyOrDescription<M>) => {
@@ -43,6 +44,7 @@ export const buildJsonSchemas = <M extends Models>(
     target: opts.target,
     basePath: [`${$id}#`],
     errorMessages: opts.errorMessages,
+    $refStrategy: opts.refStrategy ?? `root`,
   });
 
   const jsonSchema: JsonSchema = {
